@@ -1012,29 +1012,57 @@ function renderChallenges() {
       btnClass = "btn-secondary";
     }
 
-    return `
-      <div class="challenge-card glass-panel">
-        <div class="chal-card-header">
-          <span class="diff-badge ${chal.difficulty.toLowerCase()}">${chal.difficulty}</span>
-          <span class="chal-xp-reward">+${chal.xp} XP</span>
-        </div>
-        
-        <h3>${chal.title}</h3>
-        <p>${chal.description}</p>
-        
-        <div class="chal-progress-area">
-          <div class="progress-label-row">
-            <span>Progress</span>
-            <span>${chal.progress}%</span>
-          </div>
-          <div class="progress-bar-container">
-            <div class="progress-bar-fill" style="width: ${chal.progress}%;"></div>
-          </div>
-        </div>
+    let diffColorClass = chal.difficulty.toLowerCase();
 
-        <button class="btn ${btnClass} btn-full" onclick="interactChallenge('${chal.id}')" ${chal.status === 'Completed' ? 'disabled' : ''}>
-          ${buttonText}
-        </button>
+    return `
+      <div class="chal-flip-card">
+        <div class="chal-flip-inner">
+          <!-- FRONT SIDE (Cyber Access ID Card) -->
+          <div class="chal-flip-front ${diffColorClass}">
+            <div class="chal-card-top-row">
+              <span class="diff-badge ${diffColorClass}">${chal.difficulty}</span>
+              <span class="chal-xp-reward">+${chal.xp} XP</span>
+            </div>
+            
+            <div class="chal-card-middle-row">
+              <div class="chal-card-chip"></div>
+              <div class="chal-card-contactless">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                  <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61l1.42-1.42C5.51 15.11 5 13.62 5 12c0-3.87 3.13-7 7-7s7 3.13 7 7c0 1.62-.51 3.11-1.39 4.19l1.42 1.42C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 4c-2.76 0-5 2.24-5 5 0 1.15.39 2.22 1.03 3.08l1.42-1.42C9.17 13.12 9 12.58 9 12c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .58-.17 1.12-.45 1.66l1.42 1.42C16.61 14.22 17 13.15 17 12c0-2.76-2.24-5-5-5zm0 4c-1.1 0-2 .9-2 2 0 .34.09.66.24.93l1.76-1.76V11z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="chal-front-title">${chal.title}</div>
+            
+            <div class="chal-progress-area">
+              <div class="progress-label-row">
+                <span>Progress</span>
+                <span>${chal.progress}%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: ${chal.progress}%;"></div>
+              </div>
+            </div>
+
+            <div class="chal-card-logo">GAMIN.</div>
+          </div>
+
+          <!-- BACK SIDE (Details & Action) -->
+          <div class="chal-flip-back">
+            <div class="chal-card-strip"></div>
+            <div class="chal-card-sig-row">
+              <div class="chal-card-signature"></div>
+              <span class="chal-card-cvv">SECURE XP</span>
+            </div>
+
+            <p class="chal-back-desc">${chal.description}</p>
+
+            <button class="btn ${btnClass} btn-full" onclick="interactChallenge('${chal.id}')" ${chal.status === 'Completed' ? 'disabled' : ''}>
+              ${buttonText}
+            </button>
+          </div>
+        </div>
       </div>
     `;
   }).join("");
