@@ -164,7 +164,7 @@ const DEFAULT_ACHIEVEMENTS = [
   {
     id: "ach_3",
     title: "Community Supporter",
-    description: "Successfully submitted verified feedback or signed up for tournament lists using the web forms.",
+    description: "Successfully redeemed tactical customization assets from the GAMIN shop.",
     unlocked: false,
     date: "Locked",
     icon: "🤝"
@@ -172,10 +172,45 @@ const DEFAULT_ACHIEVEMENTS = [
   {
     id: "ach_4",
     title: "Dev Approved Gamer",
-    description: "Received an official upvote or direct comment reply from a verified game developer.",
+    description: "Successfully completed at least 3 high-intensity arena quests.",
     unlocked: false,
     date: "Locked",
     icon: "👑"
+  }
+];
+
+const STORE_ITEMS = [
+  {
+    id: "border_cyan",
+    name: "Cyan Aura Border",
+    cost: 500,
+    type: "border",
+    description: "Equip a glowing cyan neon avatar outline with custom cyberpunk glassmorphism shadows.",
+    icon: "💎"
+  },
+  {
+    id: "title_elite",
+    name: "ELITE FRAGGER Title",
+    cost: 800,
+    type: "title",
+    description: "Unlock the golden glowing 'ELITE FRAGGER' title tag next to your gamer passport tag.",
+    icon: "🔥"
+  },
+  {
+    id: "frame_esports",
+    name: "Obsidian Frame",
+    cost: 1200,
+    type: "frame",
+    description: "Upgrade your gamer passport dashboard with custom cyberpunk dark obsidian styling cues.",
+    icon: "🌌"
+  },
+  {
+    id: "coupon_gfuel",
+    name: "30% G-FUEL Code",
+    cost: 1500,
+    type: "coupon",
+    description: "Redeem a high-fidelity discount physical coupon valid for checkout at the official G-FUEL store.",
+    icon: "⚡"
   }
 ];
 
@@ -340,7 +375,25 @@ const routes = {
   challenges: { viewId: "challenges-view", navId: "nav-challenges", sbId: "sb-link-challenges" },
   ask: { viewId: "ask-view", navId: "nav-ask", sbId: "sb-link-ask" },
   achievements: { viewId: "achievements-view", navId: "nav-achievements", sbId: "sb-link-achievements" },
-  profile: { viewId: "profile-view", navId: "nav-profile", sbId: "sb-link-profile" }
+  profile: { viewId: "profile-view", navId: "nav-profile", sbId: "sb-link-profile" },
+  store: { viewId: "store-view", navId: "nav-store", sbId: "sb-link-store" }
+};
+
+window.openProfileEditModal = function() {
+  const modal = document.getElementById("profile-edit-modal");
+  if (modal) {
+    modal.classList.add("active");
+    const user = appState.clerkUser || { username: "RZX LEGEND", role: "gamer", tagline: "Discipline. Focus. Dominate. | Squad Leader at GAMIN Guild. PC gamer only. Let's make gaming strategies clean!", seed: "Aero" };
+    document.getElementById("profile-username-input").value = user.username;
+    document.getElementById("profile-role-input").value = user.role;
+    document.getElementById("profile-bio-input").value = user.tagline || "";
+    document.getElementById("profile-avatar-seed").value = user.seed || "Aero";
+  }
+};
+
+window.closeProfileEditModal = function() {
+  const modal = document.getElementById("profile-edit-modal");
+  if (modal) modal.classList.remove("active");
 };
 
 function router() {
@@ -411,6 +464,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initStoriesSystem();
   initPostExpansionModal();
   initSocialChatHub();
+  initProfilePostsGrid();
 });
 
 function renderCurrentView(hash) {
@@ -471,7 +525,10 @@ function renderCurrentView(hash) {
       renderAchievements();
       break;
     case "profile":
-      renderSquad();
+      renderProfile();
+      break;
+    case "store":
+      renderStore();
       break;
     default:
       break;
@@ -496,9 +553,13 @@ function syncClerkAuthStateUI() {
   // A. NAVBAR CLERK WIDGET RENDERING
   if (authSection) {
     if (user) {
+      const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+      const isCyanBorder = equipped.border === "border_cyan";
+      const userBtnClass = isCyanBorder ? "clerk-user-button shop-equipped-border" : "clerk-user-button";
+
       // Authenticated Clerk Button (UserButton)
       authSection.innerHTML = `
-        <div class="clerk-user-button" id="clerk-user-btn" title="${user.username} account">
+        <div class="${userBtnClass}" id="clerk-user-btn" title="${user.username} account">
           <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}" alt="${user.username}">
           <span class="clerk-user-dot"></span>
         </div>
@@ -525,15 +586,22 @@ function syncClerkAuthStateUI() {
   // B. SIDEBAR CARD RENDERING (Gated)
   if (sidebarProfile) {
     if (user) {
+      const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+      const isCyanBorder = equipped.border === "border_cyan";
+      const isEliteTitle = equipped.title === "title_elite";
+      
+      const avatarContainerClass = isCyanBorder ? "avatar-container shop-equipped-border" : "avatar-container";
+      const userTagText = isEliteTitle ? `${user.username} <span style="color: var(--neon-gold); font-size: 0.68rem; font-weight: 800; background: rgba(234,179,8,0.15); padding: 1px 4px; border-radius: 3px; text-shadow: 0 0 5px rgba(234,179,8,0.3); margin-left: 2px;">🔥 ELITE</span>` : user.username;
+
       sidebarProfile.style.display = "block";
       sidebarProfile.innerHTML = `
         <div class="user-card-header">
-          <div class="avatar-container">
+          <div class="${avatarContainerClass}">
             <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}" alt="Avatar">
             <span class="status-indicator online"></span>
           </div>
           <div class="user-card-info">
-            <h4>${user.username}</h4>
+            <h4 style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px;">${userTagText}</h4>
             <p class="badge-role ${user.role}">${user.role === "dev" ? "GAME DEV" : "Gamer"}</p>
           </div>
         </div>
@@ -568,23 +636,8 @@ function syncClerkAuthStateUI() {
       passportMainContent.style.display = "grid";
       passportGalleryDivider.style.display = "block";
 
-      // Sync Passport preview card
-      document.getElementById("pass-avatar").src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}`;
-      document.getElementById("pass-username").textContent = user.username;
-      
-      const badge = document.getElementById("pass-role-badge");
-      badge.textContent = user.role === "dev" ? "GAME DEV" : "PRO GAMER";
-      badge.className = `badge-role ${user.role}`;
-
-      document.querySelector(".passport-tagline").textContent = `“${user.tagline}”`;
-      document.getElementById("pass-level").textContent = Math.floor(user.xp / 250);
-      document.querySelector(".level-xp").textContent = `${user.xp.toLocaleString()} / ${((Math.floor(user.xp / 250) + 1) * 250).toLocaleString()} XP`;
-      document.querySelector(".passport-level-section .progress-bar-fill").style.width = `${((user.xp % 250) / 250) * 100}%`;
-
-      // Stats inside passport
-      document.getElementById("pass-stat-completed").textContent = appState.challenges.filter(c => c.status === "Completed").length;
-      document.getElementById("pass-stat-comments").textContent = appState.posts.filter(p => p.author === user.username).length;
-      document.getElementById("pass-stat-likes").textContent = appState.posts.filter(p => p.author === user.username).reduce((s,c)=>s+c.likes, 0) + 148;
+      // Sync Passport Esports Dashboard preview card details
+      renderAchievements();
     } else {
       passportAuthGate.style.display = "block";
       passportMainContent.style.display = "none";
@@ -598,18 +651,14 @@ function syncClerkAuthStateUI() {
       profileAuthGate.style.display = "none";
       profileMainContent.style.display = "block";
 
-      // Sync form values
-      document.getElementById("prof-avatar").src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}`;
-      document.getElementById("prof-username-display").textContent = user.username;
-      
-      const profRoleBadge = document.getElementById("prof-role-badge");
-      profRoleBadge.textContent = user.role === "dev" ? "GAME DEV" : "PRO GAMER";
-      profRoleBadge.className = `badge-role ${user.role}`;
+      // Sync Instagram Bio and visual configurations
+      renderProfile();
 
+      // Sync modal inputs
       document.getElementById("profile-username-input").value = user.username;
       document.getElementById("profile-role-input").value = user.role;
-      document.getElementById("profile-bio-input").value = user.tagline;
-      document.getElementById("profile-avatar-seed").value = user.seed;
+      document.getElementById("profile-bio-input").value = user.tagline || "";
+      document.getElementById("profile-avatar-seed").value = user.seed || "Aero";
     } else {
       profileAuthGate.style.display = "block";
       profileMainContent.style.display = "none";
@@ -1406,34 +1455,416 @@ window.addAnswer = function(qId) {
 };
 
 // 3. ACHIEVEMENTS CATALOG VIEW
+// 3. ACHIEVEMENTS DYNAMIC PORTFOLIO VIEW
 function renderAchievements() {
-  const strip = document.getElementById("pass-badges-strip");
-  const gallery = document.getElementById("achievements-gallery");
+  const user = appState.clerkUser;
+  if (!user) return;
 
-  // Sync pass strip
-  if (strip) {
-    const unlockedAchievements = appState.achievements.filter(a => a.unlocked);
-    strip.innerHTML = unlockedAchievements.map(a => `
-      <div class="pass-badge-icon" title="${a.title}: ${a.description}">
-        <span style="font-size: 1.15rem;">${a.icon}</span>
-      </div>
-    `).join("");
+  const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+  const isCyanBorder = equipped.border === "border_cyan";
+  const isEliteTitle = equipped.title === "title_elite";
+  const isObsidianFrame = equipped.frame === "frame_esports";
+
+  // Sync Left panel details
+  const portAvatar = document.getElementById("port-avatar");
+  const portUsername = document.getElementById("port-username");
+  const portRoleText = document.getElementById("port-role-text");
+  const portMetaId = document.getElementById("port-meta-id");
+  const portMetaCountry = document.getElementById("port-meta-country");
+  const portMetaDate = document.getElementById("port-meta-date");
+  const portMetaPlatform = document.getElementById("port-meta-platform");
+  const portMetaRole = document.getElementById("port-meta-role");
+  const portQuoteText = document.getElementById("port-quote-text");
+  const portAvatarFrame = document.querySelector(".portfolio-avatar-frame");
+  const leftPanel = document.querySelector(".portfolio-left-panel");
+  const rightPanel = document.querySelector(".portfolio-right-panel");
+
+  if (portAvatar) portAvatar.src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}`;
+  
+  if (portUsername) {
+    if (isEliteTitle) {
+      portUsername.innerHTML = `${user.username} <span style="color: var(--neon-gold); font-size: 0.72rem; font-weight: 800; background: rgba(234,179,8,0.12); padding: 1px 5px; border-radius: 3px; border: 1px solid rgba(234,179,8,0.2); margin-left: 6px; text-shadow: 0 0 6px rgba(234,179,8,0.4); vertical-align: middle;">🔥 ELITE</span>`;
+    } else {
+      portUsername.textContent = user.username;
+    }
   }
 
-  // Populate catalog list if element exists
-  if (gallery) {
-    gallery.innerHTML = appState.achievements.map(a => `
-      <div class="achievement-gal-card glass-panel ${a.unlocked ? 'unlocked' : 'locked'}">
-        <div class="gal-card-icon">
-          <span style="font-size: 1.5rem;">${a.unlocked ? a.icon : '🔒'}</span>
+  if (portRoleText) {
+    portRoleText.textContent = user.role === "dev" ? "Game Developer" : "Professional Gamer";
+  }
+
+  if (portMetaId) portMetaId.textContent = `@${user.username.toLowerCase()}_gamin`;
+  if (portMetaCountry) portMetaCountry.textContent = "India 🇮🇳";
+  if (portMetaDate) portMetaDate.textContent = "June 2021";
+  if (portMetaPlatform) portMetaPlatform.textContent = user.role === "dev" ? "Unity / Unreal" : "PC / Mobile";
+  if (portMetaRole) portMetaRole.textContent = user.role === "dev" ? "Lead UI Engineer" : "Assaulter / IGL";
+  if (portQuoteText) portQuoteText.textContent = user.tagline || "Discipline. Focus. Dominate.";
+
+  // Apply Cyan Border Glow to Avatar
+  if (portAvatarFrame) {
+    if (isCyanBorder) {
+      portAvatarFrame.style.borderColor = "var(--neon-cyan)";
+      portAvatarFrame.style.boxShadow = "0 0 20px rgba(6, 182, 212, 0.7), inset 0 0 10px rgba(6, 182, 212, 0.4)";
+    } else {
+      portAvatarFrame.style.borderColor = "";
+      portAvatarFrame.style.boxShadow = "";
+    }
+  }
+
+  // Apply Obsidian Frame Glow & Shadows to Left/Right Panels
+  if (leftPanel && rightPanel) {
+    if (isObsidianFrame) {
+      leftPanel.style.borderColor = "var(--neon-purple)";
+      leftPanel.style.boxShadow = "0 0 20px rgba(168, 85, 247, 0.25)";
+      rightPanel.style.borderColor = "var(--neon-purple)";
+      rightPanel.style.boxShadow = "0 0 20px rgba(168, 85, 247, 0.25)";
+    } else {
+      leftPanel.style.borderColor = "";
+      leftPanel.style.boxShadow = "";
+      rightPanel.style.borderColor = "";
+      rightPanel.style.boxShadow = "";
+    }
+  }
+
+  // Stats Counters calculations based on Quest completions
+  const completedCount = appState.challenges.filter(c => c.status === "Completed").length;
+  
+  const statPlayed = document.getElementById("port-stat-played");
+  const statWon = document.getElementById("port-stat-won");
+  const statMvp = document.getElementById("port-stat-mvp");
+  const statKd = document.getElementById("port-stat-kd");
+  const statRank = document.getElementById("port-stat-rank");
+
+  if (statPlayed) statPlayed.textContent = (completedCount * 3 + 14).toLocaleString();
+  if (statWon) statWon.textContent = (completedCount * 2 + 7).toLocaleString();
+  if (statMvp) statMvp.textContent = (completedCount + 3).toLocaleString().padStart(2, "0");
+  if (statKd) statKd.textContent = (2.4 + (completedCount * 0.15)).toFixed(2);
+  if (statRank) statRank.textContent = `#${user.rank}`;
+
+  // Badges Grid: dynamic rendering linking state with high-fidelity badges
+  const badgeGrid = document.querySelector(".portfolio-badge-grid");
+  if (badgeGrid) {
+    // Map badges to actual DEFAULT_ACHIEVEMENTS
+    const achievements = appState.achievements;
+    
+    badgeGrid.innerHTML = `
+      <!-- Card 1: FOUNDING MEMBER -->
+      <div class="port-badge-card glass-panel ${achievements[0].unlocked ? 'unlocked' : 'locked'}" style="${achievements[0].unlocked ? '' : 'opacity: 0.45; filter: grayscale(1);'}">
+        <div class="badge-graphic-slot">
+          <div class="badge-emblem trophy">${achievements[0].unlocked ? '🏆' : '🔒'}</div>
         </div>
-        <h4>${a.title}</h4>
-        <p>${a.description}</p>
-        ${a.unlocked ? `<span class="unlock-date">Unlocked ${a.date}</span>` : '<span class="unlock-date" style="color: var(--text-muted);">Locked</span>'}
+        <div class="badge-title">FOUNDING MEMBER</div>
+        <div class="badge-subtitle">${achievements[0].description.toUpperCase()}</div>
+        <div class="badge-year">${achievements[0].unlocked ? '2026' : 'LOCKED'}</div>
       </div>
-    `).join("");
+
+      <!-- Card 2: TACTICAL MASTER -->
+      <div class="port-badge-card glass-panel ${achievements[1].unlocked ? 'unlocked' : 'locked'}" style="${achievements[1].unlocked ? '' : 'opacity: 0.45; filter: grayscale(1);'}">
+        <div class="badge-graphic-slot">
+          <div class="badge-emblem star">${achievements[1].unlocked ? '⭐' : '🔒'}</div>
+        </div>
+        <div class="badge-title">TACTICAL MASTER</div>
+        <div class="badge-subtitle">${achievements[1].description.toUpperCase()}</div>
+        <div class="badge-year">${achievements[1].unlocked ? '2026' : 'LOCKED'}</div>
+      </div>
+
+      <!-- Card 3: ELITE CONTRIBUTOR -->
+      <div class="port-badge-card glass-panel ${achievements[2].unlocked ? 'unlocked' : 'locked'}" style="${achievements[2].unlocked ? '' : 'opacity: 0.45; filter: grayscale(1);'}">
+        <div class="badge-graphic-slot">
+          <div class="badge-emblem shield">${achievements[2].unlocked ? '🛡️' : '🔒'}</div>
+        </div>
+        <div class="badge-title">ELITE CONTRIBUTOR</div>
+        <div class="badge-subtitle">${achievements[2].description.toUpperCase()}</div>
+        <div class="badge-year">${achievements[2].unlocked ? '2026' : 'LOCKED'}</div>
+      </div>
+
+      <!-- Card 4: DEV CHAMPION -->
+      <div class="port-badge-card glass-panel ${achievements[3].unlocked ? 'unlocked' : 'locked'}" style="${achievements[3].unlocked ? '' : 'opacity: 0.45; filter: grayscale(1);'}">
+        <div class="badge-graphic-slot">
+          <div class="badge-emblem medal">${achievements[3].unlocked ? '🏅' : '🔒'}</div>
+        </div>
+        <div class="badge-title">DEV CHAMPION</div>
+        <div class="badge-subtitle">${achievements[3].description.toUpperCase()}</div>
+        <div class="badge-year">${achievements[3].unlocked ? '2026' : 'LOCKED'}</div>
+      </div>
+    `;
+  }
+
+  // Verification ID and Footer row
+  const footerPlaystyle = document.getElementById("port-footer-playstyle");
+  const verificationId = document.getElementById("port-verification-id");
+
+  if (footerPlaystyle) {
+    footerPlaystyle.textContent = user.role === "dev" ? "Architect • Detail • Responsive" : "Aggressive • Strategic • Leader";
+  }
+  if (verificationId) {
+    verificationId.textContent = `GAMIN-VER-${(user.xp * 7).toString().padStart(4, "0")}-XL9Q`;
   }
 }
+
+// 4. MY PROFILE VIEW
+function renderProfile() {
+  const user = appState.clerkUser;
+  if (!user) return;
+
+  const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+  const isCyanBorder = equipped.border === "border_cyan";
+  const isEliteTitle = equipped.title === "title_elite";
+
+  // Sync profile details
+  const profAvatar = document.getElementById("prof-avatar");
+  const profUsernameDisplay = document.getElementById("prof-username-display");
+  const profXpDisplay = document.getElementById("prof-xp-display");
+  const profRoleBadge = document.getElementById("prof-role-badge");
+  const profBioText = document.getElementById("prof-bio-text");
+  const avatarWrapper = document.getElementById("profile-avatar-wrapper-main");
+
+  if (profAvatar) profAvatar.src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}`;
+  if (profUsernameDisplay) {
+    if (isEliteTitle) {
+      profUsernameDisplay.innerHTML = `${user.username} <span style="color: var(--neon-gold); font-size: 0.8rem; font-weight: 800; background: rgba(234,179,8,0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(234,179,8,0.2); margin-left: 6px; text-shadow: 0 0 6px rgba(234,179,8,0.3);">🔥 ELITE</span>`;
+    } else {
+      profUsernameDisplay.textContent = user.username;
+    }
+  }
+  if (profXpDisplay) profXpDisplay.textContent = `${user.xp.toLocaleString()} XP`;
+  if (profRoleBadge) {
+    if (isEliteTitle) {
+      profRoleBadge.textContent = "🔥 ELITE FRAGGER";
+      profRoleBadge.className = "insta-bio-role shop-equipped-title";
+    } else {
+      profRoleBadge.textContent = user.role === "dev" ? "GAME DEVELOPER" : "PROFESSIONAL GAMER";
+      profRoleBadge.className = "insta-bio-role";
+    }
+  }
+  if (profBioText) profBioText.textContent = user.tagline || "Aim precise, speak little, execute perfectly.";
+  if (avatarWrapper) {
+    if (isCyanBorder) {
+      avatarWrapper.className = "insta-avatar-wrapper shop-equipped-border";
+      avatarWrapper.style.borderColor = "var(--neon-cyan)";
+      avatarWrapper.style.boxShadow = "0 0 20px rgba(6, 182, 212, 0.6)";
+    } else {
+      avatarWrapper.className = "insta-avatar-wrapper";
+      avatarWrapper.style.borderColor = "";
+      avatarWrapper.style.boxShadow = "";
+    }
+  }
+
+  // Populate grid posts matching Instagram columns
+  renderProfilePostsGrid("posts");
+}
+
+function initProfilePostsGrid() {
+  const tabPosts = document.getElementById("tab-posts");
+  const tabClips = document.getElementById("tab-clips");
+  const tabSaved = document.getElementById("tab-saved");
+
+  const switchTab = (activeTab, inactiveTabs, mode) => {
+    activeTab.classList.add("active");
+    inactiveTabs.forEach(t => t.classList.remove("active"));
+    renderProfilePostsGrid(mode);
+  };
+
+  if (tabPosts) {
+    tabPosts.addEventListener("click", () => {
+      switchTab(tabPosts, [tabClips, tabSaved], "posts");
+    });
+  }
+  if (tabClips) {
+    tabClips.addEventListener("click", () => {
+      switchTab(tabClips, [tabPosts, tabSaved], "clips");
+    });
+  }
+  if (tabSaved) {
+    tabSaved.addEventListener("click", () => {
+      switchTab(tabSaved, [tabPosts, tabClips], "saved");
+    });
+  }
+}
+
+function renderProfilePostsGrid(mode) {
+  const container = document.getElementById("profile-posts-grid");
+  if (!container) return;
+
+  const user = appState.clerkUser;
+  if (!user) return;
+
+  // Let's filter posts based on mode
+  let targetPosts = [];
+  if (mode === "posts") {
+    // Show posts made by the active user
+    targetPosts = appState.posts.filter(p => p.author === user.username);
+    
+    // Fallback: if user has no posts yet, show default community posts
+    if (targetPosts.length === 0) {
+      targetPosts = appState.posts.slice(0, 6);
+    }
+  } else if (mode === "clips") {
+    // Show only "tip" category posts which represent tactical clips
+    targetPosts = appState.posts.filter(p => p.category === "tip");
+  } else if (mode === "saved") {
+    // Show posts saved by the active user
+    targetPosts = appState.posts.filter(p => (p.savedBy || []).includes(user.username));
+    if (targetPosts.length === 0) {
+      targetPosts = appState.posts.filter(p => p.category === "review").slice(0, 2);
+    }
+  }
+
+  container.innerHTML = targetPosts.map(post => {
+    let imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&auto=format";
+    if (post.image === "cozy-setup") imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500&auto=format";
+    if (post.image === "clean-desk") imageUrl = "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=500&auto=format";
+    if (post.image === "indie-gaming") imageUrl = "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&auto=format";
+    const isCustomKeyword = !["cozy-setup", "clean-desk", "indie-gaming"].includes(post.image);
+
+    const likesCount = post.likes;
+    const commentsCount = post.comments.length;
+
+    return `
+      <div class="insta-post-cell" onclick="openPostExpansionModal('${post.id}')">
+        <img src="${isCustomKeyword ? 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&auto=format' : imageUrl}" 
+             alt="${post.title}" 
+             onerror="this.src='https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&auto=format'">
+        <div class="insta-post-overlay">
+          <div class="insta-overlay-stat">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            <span>${likesCount}</span>
+          </div>
+          <div class="insta-overlay-stat">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <span>${commentsCount}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// 5. GAMIN STORE VIEW
+function renderStore() {
+  const container = document.getElementById("shop-items-grid");
+  const balanceEl = document.getElementById("store-xp-balance");
+  if (!container) return;
+
+  const user = appState.clerkUser;
+  
+  // Sync balance
+  if (balanceEl) {
+    balanceEl.textContent = user ? `${user.xp.toLocaleString()} XP` : "Locked (Sign In)";
+  }
+
+  // Read unlocked and equipped lists
+  const unlocked = getStorage("gamin_unlocked_items", []);
+  const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+
+  container.innerHTML = STORE_ITEMS.map(item => {
+    let buttonHtml = "";
+    const isUnlocked = unlocked.includes(item.id);
+    const isEquipped = equipped[item.type] === item.id;
+
+    if (!user) {
+      buttonHtml = `<button class="btn btn-secondary btn-full" onclick="openClerkModal('signin')">Sign In to Redeem</button>`;
+    } else if (isUnlocked) {
+      if (item.type === "coupon") {
+        buttonHtml = `
+          <div class="secure-id-badge" style="justify-content: center; font-size: 0.8rem; border-color: var(--primary);">
+            CODE: <span>GAMIN-FUEL-30</span>
+          </div>
+          <p class="small-text text-muted" style="margin-top: 4px; font-size: 0.65rem;">Code unlocked permanently</p>
+        `;
+      } else {
+        const activeText = isEquipped ? "Equipped ✓" : "Equip Item";
+        const btnClass = isEquipped ? "btn-primary" : "btn-secondary";
+        buttonHtml = `<button class="btn ${btnClass} btn-full" onclick="toggleEquipStoreItem('${item.id}', '${item.type}')">${activeText}</button>`;
+      }
+    } else {
+      const canAfford = user.xp >= item.cost;
+      const disabledAttr = canAfford ? "" : "disabled";
+      const btnClass = canAfford ? "btn-primary" : "btn-secondary";
+      const titleHint = canAfford ? "Click to redeem" : "Insufficient XP";
+      buttonHtml = `
+        <button class="btn ${btnClass} btn-full" onclick="buyStoreItem('${item.id}')" ${disabledAttr} title="${titleHint}">
+          Redeem for ${item.cost} XP
+        </button>
+      `;
+    }
+
+    return `
+      <div class="shop-item-card glass-panel" id="shop-card-${item.id}">
+        <div class="shop-item-icon">${item.icon}</div>
+        <h3>${item.name}</h3>
+        <p>${item.description}</p>
+        <div class="shop-item-footer">
+          <div class="shop-item-price-tag">${item.cost} XP</div>
+          ${buttonHtml}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+window.buyStoreItem = function(itemId) {
+  if (!clerkAuthenticationGuard("redeem items from the Gamin Shop")) return;
+
+  const item = STORE_ITEMS.find(i => i.id === itemId);
+  if (!item) return;
+
+  const user = appState.clerkUser;
+  if (user.xp < item.cost) {
+    showToast(`Insufficient XP balance! You need ${item.cost - user.xp} more XP.`, "error");
+    return;
+  }
+
+  // Deduct XP
+  user.xp -= item.cost;
+  setStorage("gamin_clerk_user", user);
+
+  // Add to unlocked list
+  const unlocked = getStorage("gamin_unlocked_items", []);
+  if (!unlocked.includes(itemId)) {
+    unlocked.push(itemId);
+  }
+  setStorage("gamin_unlocked_items", unlocked);
+
+  // Sync state
+  appState.clerkUser = user;
+  
+  // Award custom achievement if they unlock multiple items!
+  if (unlocked.length >= 2) {
+    unlockAchievement("ach_3"); // unlock community supporter
+  }
+
+  syncClerkAuthStateUI();
+  renderStore();
+  showToast(`Successfully redeemed '${item.name}'! Permanent unlock saved.`, "success");
+};
+
+window.toggleEquipStoreItem = function(itemId, itemType) {
+  if (!clerkAuthenticationGuard("equip shop items")) return;
+
+  const equipped = getStorage("gamin_equipped_items", { border: "", title: "", frame: "" });
+  const isCurrentlyEquipped = equipped[itemType] === itemId;
+
+  if (isCurrentlyEquipped) {
+    equipped[itemType] = "";
+    showToast(`Unequipped item successfully.`, "info");
+  } else {
+    equipped[itemType] = itemId;
+    showToast(`Equipped item successfully! Glowing adjustments applied.`, "success");
+  }
+
+  setStorage("gamin_equipped_items", equipped);
+  
+  // Trigger UI sync across pages
+  syncClerkAuthStateUI();
+  renderStore();
+  renderProfile();
+  renderAchievements();
+};
 
 // 4. SQUAD LIST VIEW
 function renderSquad() {

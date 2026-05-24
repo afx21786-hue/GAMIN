@@ -4620,3 +4620,860 @@ textarea.form-input {
   border: 1px solid rgba(74, 222, 128, 0.35);
 }
 
+/* ====================================================
+   ESPORTS gamer PORTFOLIO STYLES
+   ==================================================== */
+.portfolio-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  padding: 10px;
+  min-height: 520px;
+  align-items: stretch;
+  margin-top: 10px;
+}
+
+.portfolio-left-panel {
+  padding: 24px;
+  background: rgba(8, 10, 9, 0.7);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--card-radius);
+  border: 1.5px solid var(--border-color);
+  position: relative;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.portfolio-logo-row {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1px;
+}
+
+.portfolio-logo-icon {
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--primary);
+}
+
+.portfolio-avatar-frame-container {
+  margin: 24px auto;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.portfolio-avatar-frame {
+  width: 140px;
+  height: 140px;
+  border-radius: 8px;
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.25);
+  background: #000;
+  overflow: hidden;
+  padding: 4px;
+  position: relative;
+}
+
+/* Shop unlocked glowing border */
+.portfolio-avatar-frame.shop-equipped-border {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+  animation: borderGlowFlow 4s infinite linear;
+}
+
+@keyframes borderGlowFlow {
+  0%, 100% { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(6, 182, 212, 0.6); }
+  50% { border-color: var(--neon-purple); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
+}
+
+.portfolio-avatar-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.portfolio-user-id-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.portfolio-user-id-row h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.port-verified-badge {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 0 4px rgba(74,222,128,0.5));
+}
+
+.portfolio-role-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* Shop equipped gold title */
+.portfolio-role-title.shop-equipped-title {
+  color: var(--neon-gold) !important;
+  text-shadow: 0 0 6px rgba(234, 179, 8, 0.5);
+}
+
+.portfolio-meta-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+  text-align: left;
+}
+
+.port-meta-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+  font-size: 0.72rem;
+}
+
+.port-meta-key {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.port-meta-val {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.portfolio-quote-box {
+  margin-top: 24px;
+  padding: 12px 12px 12px 18px;
+  background: rgba(255,255,255,0.015);
+  border-left: 2px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  text-align: left;
+  position: relative;
+}
+
+.quote-symbol {
+  font-size: 2.2rem;
+  font-family: Georgia, serif;
+  line-height: 1;
+  color: var(--primary);
+  opacity: 0.2;
+  position: absolute;
+  top: -6px;
+  left: 4px;
+  font-style: italic;
+}
+
+.quote-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-style: italic;
+  font-weight: 500;
+  margin: 0;
+}
+
+.portfolio-right-panel {
+  padding: 30px;
+  background: rgba(8, 10, 9, 0.5);
+  border-radius: var(--card-radius);
+  border: 1.5px solid var(--border-color);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.port-badge-verified {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 10;
+  border: 1.5px solid var(--primary);
+  background: rgba(8,10,9,0.9);
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 0 15px rgba(74,222,128,0.15);
+}
+
+.port-badge-verified .verified-label {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.port-badge-verified .verified-wordmark {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+.port-badge-verified .verified-g-logo {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 0 0 6px var(--primary);
+}
+
+.portfolio-header-area {
+  text-align: left;
+  margin-bottom: 24px;
+  z-index: 2;
+}
+
+.portfolio-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  line-height: 1;
+}
+
+.portfolio-subtitle {
+  font-size: 0.82rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.portfolio-stats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+  z-index: 2;
+}
+
+.port-stat-card {
+  padding: 12px 6px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.port-stat-icon {
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.port-stat-num {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.port-stat-lbl {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.portfolio-section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, var(--border-color), transparent);
+  margin-bottom: 20px;
+}
+
+.key-achievements-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 1px;
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.portfolio-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.port-badge-card {
+  padding: 16px 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+}
+
+.port-badge-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(74, 222, 128, 0.3);
+  box-shadow: 0 6px 15px rgba(74, 222, 128, 0.06);
+}
+
+.badge-graphic-slot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated);
+  border: 1.5px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+}
+
+.badge-emblem {
+  font-size: 1.3rem;
+}
+
+.port-badge-card .badge-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+}
+
+.port-badge-card .badge-subtitle {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.port-badge-card .badge-year {
+  font-size: 0.62rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin-top: 6px;
+  background: rgba(74, 222, 128, 0.08);
+  padding: 1px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(74, 222, 128, 0.15);
+}
+
+.portfolio-footer-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  align-items: center;
+}
+
+.port-footer-col {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 4px;
+}
+
+.footer-lbl {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.footer-val {
+  font-size: 0.72rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+.games-logos-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.game-pill {
+  font-size: 0.58rem;
+  color: #fff;
+  font-weight: 700;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+
+.secure-id-col {
+  align-items: flex-end;
+}
+
+.secure-id-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: #000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border-color);
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(74,222,128,0.05);
+}
+
+/* ====================================================
+   INSTAGRAM-STYLE PROFILE STYLES
+   ==================================================== */
+.insta-profile-header {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 24px;
+  padding: 20px 10px;
+  text-align: left;
+}
+
+.insta-avatar-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.insta-avatar-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid var(--primary);
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(74,222,128,0.2);
+  background: var(--bg-app);
+}
+
+.insta-avatar-wrapper.shop-equipped-border {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+  animation: borderGlowFlow 4s infinite linear;
+}
+
+.insta-avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--bg-surface);
+}
+
+.insta-avatar-status {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--success);
+  border: 2.5px solid var(--bg-app);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.insta-details-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.insta-user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.insta-user-row h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.insta-verified-badge {
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+}
+
+.insta-stats-row {
+  display: flex;
+  gap: 30px;
+}
+
+.insta-stat-item {
+  display: flex;
+  gap: 5px;
+  font-size: 0.85rem;
+  align-items: center;
+}
+
+.insta-stat-num {
+  font-weight: 700;
+  color: #fff;
+}
+
+.insta-stat-lbl {
+  color: var(--text-secondary);
+}
+
+.insta-bio-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.insta-bio-role {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.insta-bio-role.shop-equipped-title {
+  color: var(--neon-gold) !important;
+  text-shadow: 0 0 6px rgba(234, 179, 8, 0.5);
+}
+
+.insta-bio-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.insta-highlights-container {
+  display: flex;
+  gap: 24px;
+  padding: 10px 0 20px 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.insta-highlights-container::-webkit-scrollbar {
+  display: none;
+}
+
+.insta-highlight-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s var(--transition-elastic);
+}
+
+.insta-highlight-item:hover {
+  transform: scale(1.06);
+}
+
+.insta-highlight-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-color);
+  background: var(--bg-surface-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.2s;
+}
+
+.insta-highlight-item:hover .insta-highlight-circle {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.insta-highlight-title {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.insta-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0 10px;
+}
+
+.insta-grid-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 45px;
+  border-top: 1px solid transparent;
+  margin-top: -1px;
+}
+
+.grid-tab {
+  padding: 14px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-top: 1.5px solid transparent;
+  font-family: var(--font-sans);
+}
+
+.grid-tab:hover {
+  color: var(--text-primary);
+}
+
+.grid-tab.active {
+  color: var(--primary);
+  border-top-color: var(--primary);
+}
+
+.insta-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 16px 10px;
+}
+
+.insta-post-cell {
+  aspect-ratio: 1;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.insta-post-cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--glow-shadow);
+}
+
+.insta-post-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.insta-post-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8,10,9,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.insta-post-cell:hover .insta-post-overlay {
+  opacity: 1;
+}
+
+.insta-overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ====================================================
+   GAMIN STORE / SHOP STYLES
+   ==================================================== */
+.shop-balance-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, rgba(8,10,9,0.9) 0%, rgba(12,14,13,0.9) 100%);
+  border: 1.5px solid rgba(74,222,128,0.15);
+  border-radius: var(--card-radius);
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3), var(--glow-shadow);
+  text-align: left;
+}
+
+.shop-balance-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shop-balance-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+}
+
+.shop-balance-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary);
+  text-shadow: 0 0 10px rgba(74,222,128,0.4);
+}
+
+.shop-balance-right {
+  max-width: 50%;
+}
+
+.shop-balance-note {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.shop-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding-bottom: 30px;
+}
+
+.shop-item-card {
+  padding: 24px;
+  background: rgba(8, 10, 9, 0.6);
+  border-radius: var(--card-radius);
+  border: 1.5px solid var(--border-color);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+  position: relative;
+  transition: all 0.25s ease;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.shop-item-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(74,222,128,0.25);
+  box-shadow: var(--glow-shadow);
+}
+
+.shop-item-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 6px var(--primary-glow));
+  margin-bottom: 12px;
+}
+
+.shop-item-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.shop-item-card p {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.shop-item-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.shop-item-price-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-glow);
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(74, 222, 128, 0.15);
+  display: inline-block;
+  align-self: center;
+}
+
+@media (max-width: 900px) {
+  .portfolio-container {
+    grid-template-columns: 1fr;
+  }
+  .portfolio-footer-row {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .secure-id-col {
+    align-items: flex-start;
+  }
+  
+  .insta-profile-header {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .insta-avatar-col {
+    margin-bottom: 10px;
+  }
+  .insta-user-row {
+    justify-content: center;
+  }
+  .insta-stats-row {
+    justify-content: center;
+  }
+}
+
+
