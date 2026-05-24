@@ -69,57 +69,7 @@
         <input type="text" id="global-search" placeholder="Search strategy reviews, squads, challenges...">
       </div>
 
-      <!-- Navigation Links -->
-      <ul class="nav-menu" id="nav-menu">
-        <li>
-          <a href="#home" class="nav-link active" id="nav-home">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            Feed
-          </a>
-        </li>
-        <li>
-          <a href="#challenges" class="nav-link" id="nav-challenges">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.66 4.39 4.94A5.99 5.99 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1a5.99 5.99 0 0 0 3.61-2.96C19.08 10.66 21 8.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
-            </svg>
-            Challenges
-          </a>
-        </li>
-        <li>
-          <a href="#ask" class="nav-link" id="nav-ask">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M12 2c-5.52 0-10 3.58-10 8 0 2.42 1.35 4.58 3.5 5.92L3 21l4.58-1.5c1.37.5 2.91.8 4.42.8 5.52 0 10-3.58 10-8s-4.48-8-10-8zm1 11h-2v-2h2v2zm0-4h-2V7h2v2z"/>
-            </svg>
-            Ask
-          </a>
-        </li>
-        <li>
-          <a href="#achievements" class="nav-link" id="nav-achievements">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
-            </svg>
-            Achievements
-          </a>
-        </li>
-        <li>
-          <a href="#profile" class="nav-link" id="nav-profile">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-            Profile
-          </a>
-        </li>
-        <li>
-          <a href="#contact" class="nav-link" id="nav-contact">
-            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
-              <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-            </svg>
-            Contact
-          </a>
-        </li>
-      </ul>
+      <!-- Top navigation links removed and relocated to left sidebar -->
 
       <!-- Navbar Action Utilities & Clerk Auth Integration -->
       <div class="nav-actions">
@@ -167,27 +117,50 @@
           <ul class="sidebar-links">
             <li>
               <a href="#home" class="sb-link active" id="sb-link-home">
-                <span class="sb-hash">#</span> feed-all
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Feed
               </a>
             </li>
             <li>
               <a href="#challenges" class="sb-link" id="sb-link-challenges">
-                <span class="sb-hash">#</span> challenges-arena
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.66 4.39 4.94A5.99 5.99 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1a5.99 5.99 0 0 0 3.61-2.96C19.08 10.66 21 8.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+                </svg>
+                Challenges
               </a>
             </li>
             <li>
               <a href="#ask" class="sb-link" id="sb-link-ask">
-                <span class="sb-hash">#</span> ask-gamers
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M12 2c-5.52 0-10 3.58-10 8 0 2.42 1.35 4.58 3.5 5.92L3 21l4.58-1.5c1.37.5 2.91.8 4.42.8 5.52 0 10-3.58 10-8s-4.48-8-10-8zm1 11h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+                </svg>
+                Ask Gamers
               </a>
             </li>
             <li>
               <a href="#achievements" class="sb-link" id="sb-link-achievements">
-                <span class="sb-hash">#</span> accomplishments
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+                </svg>
+                Achievements
               </a>
             </li>
             <li>
               <a href="#profile" class="sb-link" id="sb-link-profile">
-                <span class="sb-hash">#</span> gamer-portfolio
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                My Profile
+              </a>
+            </li>
+            <li>
+              <a href="#contact" class="sb-link" id="sb-link-contact">
+                <svg class="sb-icon" viewBox="0 0 24 24" width="18" height="18" style="vertical-align: middle; margin-right: 8px;">
+                  <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                Contact Us
               </a>
             </li>
           </ul>
@@ -235,6 +208,13 @@
             </svg>
             Create Post
           </button>
+        </div>
+
+        <!-- Instagram-style Stories Bar -->
+        <div class="stories-carousel-container glass-panel" id="stories-carousel-container">
+          <div class="stories-carousel-inner" id="stories-carousel-inner">
+            <!-- Populated dynamically via app.js -->
+          </div>
         </div>
 
         <!-- Category Filter Bar (Instagram/Reddit layout mix) -->
@@ -1000,10 +980,219 @@
     </ul>
   </div>
 
+  <!-- ================= STORIES, POST MODAL & CHAT HUB LAYOUTS ================= -->
+
+  <!-- A. INSTAGRAM STORY VIEWER MODAL -->
+  <div class="modal-overlay" id="story-viewer-modal">
+    <div class="story-viewer-card glass-panel">
+      <!-- Story Top Progress Bars -->
+      <div class="story-viewer-progress-bar" id="story-progress-bar">
+        <!-- Will be dynamically populated with segment bars by app.js -->
+      </div>
+      
+      <!-- Story Header -->
+      <div class="story-viewer-header">
+        <div class="story-user-info">
+          <img id="story-author-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=AuraGames" alt="author avatar">
+          <div class="story-user-details">
+            <span id="story-author-name">Streamer</span>
+            <span id="story-time-badge">2h ago</span>
+          </div>
+        </div>
+        <button class="close-modal-btn" id="close-story-modal-btn" style="color: #fff; text-shadow: 0 0 5px #000; font-size: 2rem;">&times;</button>
+      </div>
+
+      <!-- Story Visual Content -->
+      <div class="story-viewer-body" id="story-viewer-body">
+        <img id="story-content-image" src="" alt="story content">
+        <div class="story-caption-overlay" id="story-caption-overlay">Story caption here</div>
+      </div>
+
+      <!-- Story Footer Input -->
+      <div class="story-viewer-footer">
+        <input type="text" id="story-reply-input" placeholder="Reply to story...">
+        <button class="btn btn-primary" id="story-reply-send-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Story Navigation Buttons -->
+      <button class="story-nav-btn prev" id="story-nav-prev" title="Previous story">&lsaquo;</button>
+      <button class="story-nav-btn next" id="story-nav-next" title="Next story">&rsaquo;</button>
+    </div>
+  </div>
+
+  <!-- B. INSTAGRAM POST EXPANSION MODAL -->
+  <div class="modal-overlay" id="post-expansion-modal">
+    <div class="post-expansion-card glass-panel">
+      <button class="close-modal-btn" id="close-post-expansion-btn" style="font-size: 2rem; top: 12px; right: 12px;">&times;</button>
+      <div class="post-expansion-grid">
+        <!-- Left Media Pane -->
+        <div class="post-exp-media-col">
+          <img id="post-exp-img" src="" alt="expanded post visual">
+        </div>
+        <!-- Right User & Comment Pane -->
+        <div class="post-exp-info-col">
+          <!-- User Details Header -->
+          <div class="post-exp-header">
+            <img id="post-exp-author-avatar" src="" alt="author avatar">
+            <div class="post-exp-user-details">
+              <h4>
+                <span id="post-exp-author-name">Username</span>
+                <span id="post-exp-author-role" class="badge-role gamer">GAMER</span>
+              </h4>
+              <span id="post-exp-location">Cozy Server</span>
+            </div>
+            <span id="post-exp-category" class="badge-tag tip">tip</span>
+          </div>
+
+          <!-- Description and Comments Scroll View -->
+          <div class="post-exp-body">
+            <h3 id="post-exp-title">Post Title</h3>
+            <p id="post-exp-content">Content...</p>
+            <span id="post-exp-time" class="meta-time">3 hours ago</span>
+
+            <div class="post-exp-divider"></div>
+
+            <!-- Detailed Scrollable Comments Feed -->
+            <div class="post-exp-comments-feed" id="post-exp-comments-feed">
+              <!-- Dynamically populated comments -->
+            </div>
+          </div>
+
+          <!-- Interaction and Reply Block -->
+          <div class="post-exp-footer">
+            <div class="post-exp-action-bar">
+              <div class="post-exp-actions">
+                <button class="action-btn" id="post-exp-like-btn" style="display: flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <span id="post-exp-likes-count">0 Likes</span>
+                </button>
+                <div class="post-exp-views" style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 0.85rem;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                  </svg>
+                  <span id="post-exp-views-count">0 views</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed comment text field -->
+            <div class="post-exp-comment-input">
+              <input type="text" id="post-exp-comment-input-field" placeholder="Add a strategy comment...">
+              <button class="btn btn-primary" id="post-exp-comment-submit-btn" style="padding: 6px 12px; font-size: 0.8rem;">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. FLOATING SOCIAL DM & CHAT HUB -->
+  <div class="social-hub-wrapper collapsed" id="social-chat-hub">
+    <!-- Collapsed Toggle Bar -->
+    <div class="social-hub-header" id="social-hub-toggle">
+      <div class="social-hub-title">
+        <span class="social-online-indicator"></span>
+        <h4>Social & Chat Hub</h4>
+      </div>
+      <div class="social-hub-controls">
+        <span class="badge-tag" id="social-online-count" style="background-color: var(--success); color: #fff; font-size: 0.65rem; padding: 2px 6px;">0 Active</span>
+        <span class="toggle-icon">&plus;</span>
+      </div>
+    </div>
+
+    <!-- Expanded Body Panels -->
+    <div class="social-hub-body">
+      <!-- Tabs Bar -->
+      <div class="social-tabs">
+        <button class="social-tab active" data-tab="friends">Friends</button>
+        <button class="social-tab" data-tab="chats">Direct Chat</button>
+        <button class="social-tab" data-tab="squads">Squad Rooms</button>
+      </div>
+
+      <!-- Tab 1: Friends List -->
+      <div class="social-tab-content active" id="social-tab-friends">
+        <div class="friends-list-wrapper" id="social-friends-list">
+          <!-- Populated by app.js -->
+        </div>
+        <!-- Add Friend Form -->
+        <div class="add-friend-form">
+          <input type="text" id="add-friend-name" placeholder="Enter gamer tag..." maxlength="15">
+          <button class="btn btn-primary" id="add-friend-btn" style="padding: 6px 10px; font-size: 0.72rem; white-space: nowrap;">+ Friend</button>
+        </div>
+      </div>
+
+      <!-- Tab 2: DM Chats -->
+      <div class="social-tab-content" id="social-tab-chats">
+        <div class="chat-rooms-layout">
+          <!-- Left side DM active users -->
+          <div class="chat-rooms-list" id="chat-rooms-list">
+            <!-- Dynamic active chats -->
+          </div>
+          <!-- Right side chat active thread -->
+          <div class="chat-room-active" id="chat-room-active">
+            <div class="chat-no-active-placeholder" id="chat-no-active-placeholder">
+              <svg viewBox="0 0 24 24" width="32" height="32" style="opacity: 0.3; margin-bottom: 10px;"><path fill="currentColor" d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+              <p>Select a friend to begin direct messaging.</p>
+            </div>
+            
+            <div class="chat-active-container" id="chat-active-container" style="display: none;">
+              <div class="chat-active-header">
+                <h5 id="active-chat-username">GamerTag</h5>
+                <span class="active-chat-status" id="active-chat-status">online</span>
+              </div>
+              <div class="chat-active-messages" id="active-chat-messages">
+                <!-- Message bubbles -->
+              </div>
+              <!-- Typing Indicator -->
+              <div class="chat-active-typing" id="active-chat-typing" style="display: none;">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+              </div>
+              <!-- Send Input -->
+              <div class="chat-active-input">
+                <input type="text" id="active-chat-input-field" placeholder="Type a message...">
+                <button class="btn btn-primary" id="active-chat-send-btn" style="padding: 6px 12px; font-size: 0.8rem;">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Squad Group Rooms -->
+      <div class="social-tab-content" id="social-tab-squads">
+        <div class="squad-channels-layout">
+          <!-- Left side Squad Channel Buttons -->
+          <div class="squad-channels-list" id="squad-channels-list">
+            <button class="squad-channel-btn active" data-squad="fps">⚔️ FPS Squad</button>
+            <button class="squad-channel-btn" data-squad="cozy">☕ Puzzle Clan</button>
+            <button class="squad-channel-btn" data-squad="dev">⚙️ Dev Talk</button>
+          </div>
+          <!-- Right side Active Squad chat -->
+          <div class="squad-channel-chat" id="squad-channel-chat">
+            <div class="squad-chat-messages" id="squad-chat-messages">
+              <!-- Squad chats populated dynamically -->
+            </div>
+            <div class="chat-active-input">
+              <input type="text" id="squad-chat-input-field" placeholder="Send to squad...">
+              <button class="btn btn-primary" id="squad-chat-send-btn" style="padding: 6px 12px; font-size: 0.8rem;">Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 4. TOAST MESSAGES FEEDBACK SYSTEM -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Javascript Modules -->
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

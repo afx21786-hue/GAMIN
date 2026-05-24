@@ -57,6 +57,57 @@ const DEFAULT_POSTS = [
     comments: [
       { id: "c4", author: "DesignCore", role: "gamer", avatar: "Alpha", text: "Definitely down for this. Count me in!", timestamp: "1 day ago" }
     ]
+  },
+  {
+    id: "post_4",
+    title: "Elden Ring: The Art of Shield Parrying",
+    category: "tip",
+    content: "Shield parrying in Elden Ring is all about rhythm. Instead of watching the boss's sword tip, watch their right elbow. Right as the hand starts to accelerate forward from the peak of their backswing, hit the parry button!\n\nThis simple shift in visual focus will raise your success rate from 20% to 90% instantly. Try it on Crucible Knights first — they have the most telegraphic swings.",
+    author: "OnyxRider",
+    authorRole: "gamer",
+    authorAvatar: "Storm",
+    image: "cozy-setup",
+    likes: 89,
+    likedBy: [],
+    views: 520,
+    timestamp: "1 day ago",
+    comments: [
+      { id: "c5", author: "CS_Marshal", role: "gamer", avatar: "Echo", text: "This visual cue works perfectly! Finally beat that dual knight fight.", timestamp: "18 hours ago" }
+    ]
+  },
+  {
+    id: "post_5",
+    title: "Review: Why 'Dorfromantik' is the ultimate calm strategy game",
+    category: "review",
+    content: "If you want a strategy game that relaxes you instead of spiking your cortisol, Dorfromantik is the gold standard. By stacking hexagonal tiles to build forests, railways, and rivers, the game rewards quiet forward-thinking without time constraints.\n\nThe acoustic score is soothing, the visual landscape is stunning, and the high-score feedback is pure dopamine. A masterpiece of cozy strategic planning. My rating: 9.5/10.",
+    author: "CozyIndieDev",
+    authorRole: "dev",
+    authorAvatar: "Volt",
+    image: "indie-gaming",
+    likes: 104,
+    likedBy: [],
+    views: 820,
+    timestamp: "3 days ago",
+    comments: [
+      { id: "c6", author: "MinimalistGamer", role: "gamer", avatar: "Aero", text: "Dorfromantik is my absolute go-to while programming or unwinding. Pure peace.", timestamp: "2 days ago" }
+    ]
+  },
+  {
+    id: "post_6",
+    title: "Squad LFG: Looking for serious tactical FPS support",
+    category: "squad",
+    content: "Forming a tactical team for competitive FPS league trials next month. We need an experienced support player who coordinates utility and understands deceleration curves.\n\nOur current ranks are Immortal/Ascendant. Schedule: Tue/Thu 19:00 EST. Let's build a squad and level up our passport score!",
+    author: "CS_Marshal",
+    authorRole: "gamer",
+    authorAvatar: "Echo",
+    image: "clean-desk",
+    likes: 47,
+    likedBy: [],
+    views: 310,
+    timestamp: "4 days ago",
+    comments: [
+      { id: "c7", author: "RetroStudio", role: "dev", avatar: "RetroStudio", text: "Hit me up in the DMs! I'd love to consult on crosshair spacing configurations.", timestamp: "3 days ago" }
+    ]
   }
 ];
 
@@ -241,18 +292,31 @@ const setStorage = (key, data) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
-// Data Migration: clear stale question schema missing new reddit-style fields
-(function migrateQuestions() {
-  const stored = localStorage.getItem("gamin_questions");
-  if (stored) {
+// Data Migration: clear stale question schema missing new reddit-style flairs and refresh posts cache
+(function migrateAppData() {
+  // 1. Questions migration
+  const storedQ = localStorage.getItem("gamin_questions");
+  if (storedQ) {
     try {
-      const parsed = JSON.parse(stored);
-      // If the first question is missing the new 'flair' field, reset to defaults
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].flair === undefined) {
+      const parsedQ = JSON.parse(storedQ);
+      if (Array.isArray(parsedQ) && parsedQ.length > 0 && parsedQ[0].flair === undefined) {
         localStorage.removeItem("gamin_questions");
       }
     } catch (e) {
       localStorage.removeItem("gamin_questions");
+    }
+  }
+
+  // 2. Posts migration (forces reloading the new rich posts if cache has only old 3 posts)
+  const storedP = localStorage.getItem("gamin_posts");
+  if (storedP) {
+    try {
+      const parsedP = JSON.parse(storedP);
+      if (Array.isArray(parsedP) && parsedP.length <= 3) {
+        localStorage.removeItem("gamin_posts");
+      }
+    } catch (e) {
+      localStorage.removeItem("gamin_posts");
     }
   }
 })();
@@ -301,11 +365,11 @@ function router() {
   // Scroll to top smoothly
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  // Close mobile hamburger menu
-  const navMenu = document.getElementById("nav-menu");
+  // Close mobile hamburger menu/sidebar
+  const sidebarLeft = document.getElementById("sidebar-left");
   const hamburger = document.getElementById("hamburger-btn");
-  if (navMenu && hamburger) {
-    navMenu.classList.remove("active");
+  if (sidebarLeft && hamburger) {
+    sidebarLeft.classList.remove("active");
     hamburger.classList.remove("active");
   }
 
@@ -340,6 +404,11 @@ window.addEventListener("DOMContentLoaded", () => {
   syncClerkAuthStateUI();
   router();
   initTheme();
+  
+  // Initialize Instagram Feed, Stories, and Social Chat systems
+  initStoriesSystem();
+  initPostExpansionModal();
+  initSocialChatHub();
 });
 
 function renderCurrentView(hash) {
@@ -1366,13 +1435,13 @@ function initTheme() {
   });
 }
 
-// B. Mobile Hamburger menu trigger
+// B. Mobile Hamburger menu trigger (Toggles left sidebar menu)
 const hamburger = document.getElementById("hamburger-btn");
-const navMenu = document.getElementById("nav-menu");
-if (hamburger && navMenu) {
+const sidebarLeft = document.getElementById("sidebar-left");
+if (hamburger && sidebarLeft) {
   hamburger.addEventListener("click", () => {
     hamburger.classList.toggle("active");
-    navMenu.classList.toggle("active");
+    sidebarLeft.classList.toggle("active");
   });
 }
 
@@ -2159,6 +2228,995 @@ function generatePassportCardImage() {
 
 // --- 8. FLOATING TOAST SYSTEMS ---
 function showToast(msg, type = "success") {
-  // Completely disabled toast notifications across the entire application as requested
-  return;
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  
+  // Custom theme-colored glow highlights
+  let typeIcon = "✔️";
+  if (type === "error") typeIcon = "❌";
+  if (type === "info") typeIcon = "ℹ️";
+  if (type === "warning") typeIcon = "⚠️";
+
+  toast.innerHTML = `
+    <span style="margin-right: 8px;">${typeIcon}</span>
+    <span style="flex: 1;">${msg}</span>
+    <button class="toast-close" style="font-weight: bold; margin-left: 8px; font-size: 1.1rem; line-height: 1;">&times;</button>
+  `;
+
+  container.appendChild(toast);
+
+  // Bind Close Button
+  toast.querySelector(".toast-close").addEventListener("click", () => {
+    toast.style.animation = "toastFlyOut 0.2s ease forwards";
+    setTimeout(() => toast.remove(), 200);
+  });
+
+  // Auto-Dismiss after 4 seconds
+  setTimeout(() => {
+    if (toast && toast.parentNode) {
+      toast.style.animation = "toastFlyOut 0.2s ease forwards";
+      setTimeout(() => toast.remove(), 200);
+    }
+  }, 4000);
 }
+
+
+/* ====================================================
+   GAMIN HIGH-TECH SOCIAL AND STORIES CORE LOGIC
+   ==================================================== */
+
+// --- 1. INSTAGRAM-STYLE STORIES STATE & CONTROLLER ---
+const STORIES_DATA = [
+  {
+    id: "story_self",
+    username: "My Story",
+    avatar: "GaminGamer",
+    type: "self",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop",
+    caption: "Setting up tactical gameplay profiles! Add your strategy cards.",
+    timestamp: "Just now",
+    unviewed: false
+  },
+  {
+    id: "story_dev1",
+    username: "AuraGames",
+    avatar: "AuraGames",
+    type: "dev",
+    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop",
+    caption: "Testing cozy strategy controls. FPS speedrun quest goes live soon! ☕🎮",
+    timestamp: "1h ago",
+    unviewed: true
+  },
+  {
+    id: "story_dev2",
+    username: "RetroStudio",
+    avatar: "RetroStudio",
+    type: "dev",
+    image: "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=800&auto=format&fit=crop",
+    caption: "New minimalist UI components render test. Pixel-perfect canvas!",
+    timestamp: "2h ago",
+    unviewed: true
+  },
+  {
+    id: "story_vip1",
+    username: "MinimalistGamer",
+    avatar: "Aero",
+    type: "vip",
+    image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop",
+    caption: "Rate my calm green cyber desktop build. Ultimate zero distraction setup! 🟢⚫",
+    timestamp: "4h ago",
+    unviewed: true
+  },
+  {
+    id: "story_usr1",
+    username: "PixelCozy",
+    avatar: "Volt",
+    type: "user",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop",
+    caption: "Looking for strategy squads! Direct message me to join cooperative multiplayer runs.",
+    timestamp: "6h ago",
+    unviewed: true
+  },
+  {
+    id: "story_usr2",
+    username: "SpeedRunner99",
+    avatar: "Blaze",
+    type: "user",
+    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop",
+    caption: "Elden Ring boss speedrun record! 5:58 is locked. Submit your quests!",
+    timestamp: "8h ago",
+    unviewed: true
+  }
+];
+
+let activeStoryIndex = 0;
+let storyTimer = null;
+let storyProgress = 0;
+const STORY_DURATION = 5000; // 5 seconds per story
+
+function initStoriesSystem() {
+  renderStoriesBar();
+  
+  // Bind close viewer
+  const closeBtn = document.getElementById("close-story-modal-btn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeStoryViewer);
+  }
+  
+  // Story Nav
+  const prevBtn = document.getElementById("story-nav-prev");
+  const nextBtn = document.getElementById("story-nav-next");
+  if (prevBtn) prevBtn.addEventListener("click", () => shiftStory(-1));
+  if (nextBtn) nextBtn.addEventListener("click", () => shiftStory(1));
+
+  // Reply Sender
+  const sendBtn = document.getElementById("story-reply-send-btn");
+  if (sendBtn) {
+    sendBtn.addEventListener("click", sendStoryDMReply);
+  }
+  
+  const replyInput = document.getElementById("story-reply-input");
+  if (replyInput) {
+    replyInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendStoryDMReply();
+    });
+  }
+}
+
+// Render horizontal circular circles
+function renderStoriesBar() {
+  const container = document.getElementById("stories-carousel-inner");
+  if (!container) return;
+
+  const user = appState.clerkUser;
+  
+  container.innerHTML = STORIES_DATA.map((st, idx) => {
+    let unviewedClass = st.unviewed ? "unviewed" : "";
+    let customAvatar = st.type === "self" && user ? `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}` : `https://api.dicebear.com/7.x/pixel-art/svg?seed=${st.avatar}`;
+    let customName = st.type === "self" && user ? "My Story" : st.username;
+
+    return `
+      <div class="story-circle-item ${unviewedClass} ${st.type}" onclick="launchStoryViewer(${idx})">
+        <div class="story-ring-wrapper">
+          <img src="${customAvatar}" alt="${customName} Story">
+        </div>
+        <span class="story-user-tag">${customName}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+// Open Story Viewer Modal
+function launchStoryViewer(index) {
+  const viewerModal = document.getElementById("story-viewer-modal");
+  if (!viewerModal) return;
+
+  activeStoryIndex = index;
+  viewerModal.classList.add("active");
+  
+  // Set story as viewed in local state
+  STORIES_DATA[activeStoryIndex].unviewed = false;
+  renderStoriesBar();
+
+  renderStoryContent();
+}
+
+function renderStoryContent() {
+  const story = STORIES_DATA[activeStoryIndex];
+  const user = appState.clerkUser;
+
+  const authorAvatar = document.getElementById("story-author-avatar");
+  const authorName = document.getElementById("story-author-name");
+  const timeBadge = document.getElementById("story-time-badge");
+  const contentImg = document.getElementById("story-content-image");
+  const captionOverlay = document.getElementById("story-caption-overlay");
+  const replyInput = document.getElementById("story-reply-input");
+
+  if (authorAvatar) authorAvatar.src = story.type === "self" && user ? `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.seed}` : `https://api.dicebear.com/7.x/pixel-art/svg?seed=${story.avatar}`;
+  if (authorName) authorName.textContent = story.type === "self" && user ? user.username : story.username;
+  if (timeBadge) timeBadge.textContent = story.timestamp;
+  if (contentImg) contentImg.src = story.image;
+  if (captionOverlay) captionOverlay.textContent = story.caption;
+  if (replyInput) replyInput.value = "";
+
+  // Reset Progress Indicators
+  buildStoryProgressIndicator();
+  startStoryTimer();
+}
+
+// Build progress segment bars at top of story modal
+function buildStoryProgressIndicator() {
+  const container = document.getElementById("story-progress-bar");
+  if (!container) return;
+
+  container.innerHTML = STORIES_DATA.map((st, idx) => {
+    return `
+      <div class="story-progress-segment">
+        <div class="story-progress-fill" id="story-progress-fill-${idx}"></div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Start 5 second story playback
+function startStoryTimer() {
+  if (storyTimer) clearInterval(storyTimer);
+  
+  storyProgress = 0;
+  const fillEl = document.getElementById(`story-progress-fill-${activeStoryIndex}`);
+  
+  // Fill all previous progress segments
+  for (let i = 0; i < activeStoryIndex; i++) {
+    const prevFill = document.getElementById(`story-progress-fill-${i}`);
+    if (prevFill) prevFill.style.width = "100%";
+  }
+
+  const intervalTime = 100;
+  const progressIncrement = (intervalTime / STORY_DURATION) * 100;
+
+  storyTimer = setInterval(() => {
+    storyProgress += progressIncrement;
+    if (fillEl) fillEl.style.width = `${Math.min(100, storyProgress)}%`;
+
+    if (storyProgress >= 100) {
+      clearInterval(storyTimer);
+      // Auto advance
+      if (activeStoryIndex < STORIES_DATA.length - 1) {
+        shiftStory(1);
+      } else {
+        closeStoryViewer();
+      }
+    }
+  }, intervalTime);
+}
+
+function shiftStory(direction) {
+  clearInterval(storyTimer);
+  
+  activeStoryIndex += direction;
+  if (activeStoryIndex < 0) {
+    activeStoryIndex = 0;
+  }
+  
+  if (activeStoryIndex >= STORIES_DATA.length) {
+    closeStoryViewer();
+    return;
+  }
+
+  STORIES_DATA[activeStoryIndex].unviewed = false;
+  renderStoriesBar();
+  renderStoryContent();
+}
+
+function closeStoryViewer() {
+  clearInterval(storyTimer);
+  const viewerModal = document.getElementById("story-viewer-modal");
+  if (viewerModal) viewerModal.classList.remove("active");
+}
+
+// Forward Story reply as a Direct Message in our DM Chat Hub!
+function sendStoryDMReply() {
+  const replyInput = document.getElementById("story-reply-input");
+  if (!replyInput) return;
+  const text = replyInput.value.trim();
+  if (!text) return;
+
+  if (!clerkAuthenticationGuard("send replies to stories")) return;
+
+  const story = STORIES_DATA[activeStoryIndex];
+  
+  // Skip sending DM to yourself
+  if (story.type === "self") {
+    showToast("You replied to your own story! Nice.", "info");
+    replyInput.value = "";
+    return;
+  }
+
+  // Inject story context as a first quote, then user reply
+  const formattedMsg = `💬 *Replied to your story: "${story.caption}"*\n\n"${text}"`;
+  
+  // Forward to DM logic
+  forwardMessageToDM(story.username, formattedMsg);
+  
+  showToast(`Reply sent to ${story.username}! Opened in Direct Chats.`, "success");
+  replyInput.value = "";
+
+  // Auto close story viewer and open Chat Hub direct message to show results!
+  setTimeout(() => {
+    closeStoryViewer();
+    expandSocialHub();
+    openDirectChatRoom(story.username);
+  }, 1000);
+}
+
+
+// --- 2. INSTAGRAM-STYLE DETAIL POST EXPANSION MODAL ---
+let activePostId = null;
+
+function initPostExpansionModal() {
+  // Bind close detail post modal
+  const closeBtn = document.getElementById("close-post-expansion-btn");
+  if (closeBtn) closeBtn.addEventListener("click", closePostExpansionModal);
+
+  // Bind Submit Comment Inside Expansion
+  const submitBtn = document.getElementById("post-exp-comment-submit-btn");
+  if (submitBtn) submitBtn.addEventListener("click", addExpansionPostComment);
+
+  const commentInput = document.getElementById("post-exp-comment-input-field");
+  if (commentInput) {
+    commentInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addExpansionPostComment();
+    });
+  }
+
+  // Bind Like Button inside detailed view
+  const likeBtn = document.getElementById("post-exp-like-btn");
+  if (likeBtn) {
+    likeBtn.addEventListener("click", () => {
+      if (activePostId) {
+        toggleUpvote(activePostId);
+        // Refresh details modal counters
+        renderPostExpansionDetails(activePostId);
+      }
+    });
+  }
+}
+
+// Hook card titles and card image media click to expand!
+// Overriding core renderFeed() by making elements clickable:
+// We intercept this by patching the onclick inside renderFeed dynamic string.
+window.openPostExpansionModal = function(postId) {
+  const modal = document.getElementById("post-expansion-modal");
+  if (!modal) return;
+
+  activePostId = postId;
+  modal.classList.add("active");
+
+  // Increment views counter by default when clicking
+  const post = appState.posts.find(p => p.id === postId);
+  if (post) {
+    post.views = (post.views || 0) + 1;
+    setStorage("gamin_posts", appState.posts);
+  }
+
+  renderPostExpansionDetails(postId);
+  renderFeed(); // redraw main feed to sync view count
+};
+
+window.closePostExpansionModal = function() {
+  const modal = document.getElementById("post-expansion-modal");
+  if (modal) modal.classList.remove("active");
+  activePostId = null;
+};
+
+// Render detailed post information inside expansion panel
+function renderPostExpansionDetails(postId) {
+  const post = appState.posts.find(p => p.id === postId);
+  if (!post) return;
+
+  const loggedInUser = appState.clerkUser ? appState.clerkUser.username : "";
+  const userLiked = post.likedBy.includes(loggedInUser);
+
+  // Image Url mapping
+  let imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format";
+  if (post.image === "cozy-setup") imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format";
+  if (post.image === "clean-desk") imageUrl = "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=800&auto=format";
+  if (post.image === "indie-gaming") imageUrl = "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format";
+  const isCustomKeyword = !["cozy-setup", "clean-desk", "indie-gaming"].includes(post.image);
+
+  // Fill Details
+  document.getElementById("post-exp-img").src = isCustomKeyword ? 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format' : imageUrl;
+  document.getElementById("post-exp-author-avatar").src = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${post.authorAvatar}`;
+  document.getElementById("post-exp-author-name").textContent = post.author;
+  
+  const roleBadge = document.getElementById("post-exp-author-role");
+  roleBadge.textContent = post.authorRole === "dev" ? "DEV" : "PRO GAMER";
+  roleBadge.className = `badge-role ${post.authorRole}`;
+
+  // Location display
+  let locationText = "GAMIN Online Hub";
+  if (post.category === "review") locationText = "👾 Game Critique Arena";
+  if (post.category === "tip") locationText = "💡 Strategy War Room";
+  if (post.category === "squad") locationText = "⚔️ Clans Recruitment Center";
+  document.getElementById("post-exp-location").textContent = locationText;
+
+  const catBadge = document.getElementById("post-exp-category");
+  catBadge.textContent = post.category;
+  catBadge.className = `badge-tag ${post.category}`;
+
+  document.getElementById("post-exp-title").textContent = post.title;
+  document.getElementById("post-exp-content").innerHTML = post.content.replace(/\n/g, "<br>");
+  document.getElementById("post-exp-time").textContent = post.timestamp;
+  
+  // Likes & Views
+  document.getElementById("post-exp-likes-count").textContent = `${post.likes} Likes`;
+  document.getElementById("post-exp-views-count").textContent = `${post.views} views`;
+
+  // Like Button Highlight
+  const likeBtn = document.getElementById("post-exp-like-btn");
+  if (likeBtn) {
+    if (userLiked) {
+      likeBtn.classList.add("upvote-active");
+    } else {
+      likeBtn.classList.remove("upvote-active");
+    }
+  }
+
+  // Comments feed
+  const commentsFeed = document.getElementById("post-exp-comments-feed");
+  if (commentsFeed) {
+    if (post.comments.length === 0) {
+      commentsFeed.innerHTML = `<p style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding: 20px 0;">No strategy replies yet. Post your insight!</p>`;
+    } else {
+      commentsFeed.innerHTML = post.comments.map(c => `
+        <div class="comment-item" style="border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+          <div class="comment-avatar">
+            <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${c.avatar}" alt="${c.author}">
+          </div>
+          <div class="comment-details">
+            <div class="comment-user-row">
+              <span class="comment-user-name" style="font-size:0.75rem; font-weight:600;">${c.author}</span>
+              <span class="badge-role ${c.role}" style="font-size:0.55rem; padding:0 4px;">${c.role === "dev" ? "Dev" : "Gamer"}</span>
+              <span class="meta-time" style="font-size:0.6rem;">${c.timestamp}</span>
+            </div>
+            <p class="comment-text" style="font-size:0.76rem; color:var(--text-secondary); margin-top:2px;">${c.text}</p>
+          </div>
+        </div>
+      `).join("");
+    }
+  }
+}
+
+// Add comments inside expansion modal
+function addExpansionPostComment() {
+  if (!activePostId) return;
+  const inputEl = document.getElementById("post-exp-comment-input-field");
+  if (!inputEl) return;
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  if (!clerkAuthenticationGuard("post comments")) return;
+
+  const post = appState.posts.find(p => p.id === activePostId);
+  if (!post) return;
+
+  const me = appState.clerkUser;
+  const newComment = {
+    id: `c_${Date.now()}`,
+    author: me.username,
+    role: me.role,
+    avatar: me.seed,
+    text: text,
+    timestamp: "Just now"
+  };
+
+  post.comments.push(newComment);
+  setStorage("gamin_posts", appState.posts);
+  
+  inputEl.value = "";
+  renderPostExpansionDetails(activePostId);
+  renderFeed();
+  showToast("Comment published!", "success");
+}
+
+// --- Dynamic Feed Render Click Bind Patch ---
+// Overrides the default renderFeed to inject onclick expansion triggers on headers/media!
+const originalRenderFeed = renderFeed;
+renderFeed = function() {
+  originalRenderFeed();
+  
+  // Attach Expansion Modal triggers to titles and media grids
+  document.querySelectorAll(".feed-card").forEach(card => {
+    const postId = card.id;
+    
+    // Clicking card titles expands post
+    const titleEl = card.querySelector(".card-description h3");
+    if (titleEl) {
+      titleEl.setAttribute("onclick", `openPostExpansionModal('${postId}')`);
+    }
+
+    // Clicking card images expands post
+    const mediaEl = card.querySelector(".card-media");
+    if (mediaEl) {
+      mediaEl.setAttribute("onclick", `openPostExpansionModal('${postId}')`);
+    }
+  });
+
+  // Inject Infinite Scroll button at the bottom of feed list!
+  const container = document.getElementById("feed-container");
+  if (container && !document.getElementById("infinite-scroll-trigger-btn")) {
+    const scrollBtnWrap = document.createElement("div");
+    scrollBtnWrap.style.cssText = "text-align: center; padding: 15px 0 30px 0;";
+    scrollBtnWrap.innerHTML = `
+      <button class="btn btn-secondary" id="infinite-scroll-trigger-btn" style="box-shadow: var(--glow-shadow);">
+        🔄 Load 100+ More Strategy Posts
+      </button>
+    `;
+    container.appendChild(scrollBtnWrap);
+
+    document.getElementById("infinite-scroll-trigger-btn").addEventListener("click", simulateInfiniteScrollPosts);
+  }
+};
+
+// Simulate Infinite Scroll Posts: appends 5 randomly generated gaming articles!
+const RANDOM_TITLES = [
+  "VALORANT: Perfecting Crosshair Placement on Breeze A-site",
+  "Review: Why 'Hades II' Redefines Rogue-like Progression Systems",
+  "DevLog: Crafting Ambient Lighting in Cozy Forest Simulator",
+  "Tip: Zero Input Latency Optimization for competitive OLED monitors",
+  "Recruiting: Chill RPG Guild for upcoming MMO dungeon raids",
+  "Elden Ring: Complete shield parry spacing guide",
+  "Minimalist HUD design guidelines for unity projects"
+];
+
+const RANDOM_CONTENTS = [
+  "Always keep crosshairs anchored at neck level. On breeze, the massive sight lines reward absolute precision and micro-scale movements. Zero recoil sprays work best here.",
+  "The addition of Melinoe's hex arrays changes everything. High-tier magic runs feel heavy, tactile, and rewarding, while maintaining extremely snappy controls.",
+  "We used subtle radial light filters on grass objects. By dynamically fading down HSL values as players approach trees, we mimic atmospheric cloud shading perfectly.",
+  "Ensure G-sync is activated with V-sync forced in driver panel, combined with a frame lock 3fps below refresh. This achieves zero tearing with minimal input lag.",
+  "Forming a friendly and calm team of dungeon crawlers. Requirements are simple: 18+, cozy attitude, and available Sunday evenings at 18:00 UTC. Join!",
+  "Shield parrying requires you to analyze the enemy's elbow movement, not their weapon's tip. Trigger the swing right as the hand accelerates forward.",
+  "Strip down indicators. A single health indicator, thin stamina bar, and clean ammo counts are all gamers need for complete tactical immersion."
+];
+
+const RANDOM_AUTHORS = ["VoltGamer", "CozyIndieDev", "OnyxRider", "AuraDesigner", "Puzzler_Pro", "CS_Marshal"];
+const RANDOM_AVATARS = ["Storm", "Echo", "Alpha", "Drift", "Blaze", "Volt"];
+
+function simulateInfiniteScrollPosts() {
+  const loadBtn = document.getElementById("infinite-scroll-trigger-btn");
+  if (loadBtn) {
+    loadBtn.textContent = "🔄 Querying community database...";
+    loadBtn.disabled = true;
+  }
+
+  showToast("Querying community gaming database...", "info");
+
+  setTimeout(() => {
+    // Generate 5 new random items
+    for (let i = 0; i < 5; i++) {
+      const idx = Math.floor(Math.random() * RANDOM_TITLES.length);
+      const authIdx = Math.floor(Math.random() * RANDOM_AUTHORS.length);
+      const isReview = idx === 1 || idx === 6;
+      const isSquad = idx === 4;
+      const cat = isReview ? "review" : isSquad ? "squad" : "tip";
+      
+      const newPost = {
+        id: `post_rand_${Date.now()}_${i}`,
+        title: RANDOM_TITLES[idx],
+        category: cat,
+        content: RANDOM_CONTENTS[idx],
+        author: RANDOM_AUTHORS[authIdx],
+        authorRole: authIdx === 1 || authIdx === 3 ? "dev" : "gamer",
+        authorAvatar: RANDOM_AVATARS[authIdx],
+        image: i % 2 === 0 ? "cozy-setup" : "", // random header image
+        likes: Math.floor(Math.random() * 80) + 10,
+        likedBy: [],
+        views: Math.floor(Math.random() * 300) + 50,
+        timestamp: "5 minutes ago",
+        comments: []
+      };
+
+      appState.posts.push(newPost);
+    }
+    
+    setStorage("gamin_posts", appState.posts);
+    renderFeed();
+    showToast("Successfully loaded 5 new strategy posts to feed!", "success");
+    
+    // Award +5 XP to Clerk User for active exploration
+    if (appState.clerkUser) {
+      appState.clerkUser.xp += 5;
+      setStorage("gamin_clerk_user", appState.clerkUser);
+      syncClerkAuthStateUI();
+    }
+  }, 1200);
+}
+
+
+// --- 3. FLOATING DM & FRIENDS & SQUADS CHAT HUB ---
+// In-Memory state for Social System
+let socialState = {
+  friends: [
+    { username: "PixelWarrior", avatar: "Aero", online: true, statusText: "Playing: CS2" },
+    { username: "AuraGames", avatar: "AuraGames", online: true, statusText: "Dev: Coding strategy" },
+    { username: "RetroStudio", avatar: "RetroStudio", online: true, statusText: "In Visual Studio" },
+    { username: "TechGuild", avatar: "Alpha", online: false, statusText: "Offline" }
+  ],
+  dms: {
+    "PixelWarrior": [
+      { sender: "PixelWarrior", text: "Yo! Down for some strategy co-op matches later tonight?", time: "11:20 AM" },
+      { sender: "me", text: "Def down! I've been optimizing my Unity control scheme, ready to test.", time: "11:22 AM" }
+    ],
+    "AuraGames": [
+      { sender: "AuraGames", text: "Hey! Loved your recent strategy feedback. We will launch the Zero UI speedrun quest!", time: "09:40 AM" }
+    ]
+  },
+  squads: {
+    fps: [
+      { user: "PixelWarrior", text: "CS2 tournament signups close in 2 hours. Who is in?", time: "12:05 PM" },
+      { user: "RetroStudio", text: "I'll join as Dev-Consultant, let's optimize squad latency first.", time: "12:08 PM" }
+    ],
+    cozy: [
+      { user: "AuraGames", text: "Just completed level designs for our cozy isometric puzzle game! Look at this screen visual.", time: "10:14 AM" }
+    ],
+    dev: [
+      { user: "RetroStudio", text: "Consistent grid paddings at 8px increments solve scaling issues on high-DPI displays.", time: "08:30 AM" }
+    ]
+  },
+  activeChatUser: null,
+  activeSquadTab: "fps"
+};
+
+const GAMER_REPLIES = [
+  "GG! That is a solid tactic, u absolute legend! Let's party up. 🎮",
+  "Nice setup! I'm down for that. Let's conquer the Daily Quests in GAMIN.",
+  "GLHF! Are you online tonight? Let's hop on the voice server.",
+  "Spot on! Just added that controller tip to my strategy checklist. Thanks!",
+  "Cozy games are life. Let's form a co-op strategy squad for next weekend! ⚔️☕",
+  "Haha nice! What FPS rate are you getting on your OLED monitor?",
+  "Awesome play. I'm actually coding a puzzle game clone right now, let's test it!"
+];
+
+function initSocialChatHub() {
+  const toggleBar = document.getElementById("social-hub-toggle");
+  if (toggleBar) {
+    toggleBar.addEventListener("click", toggleSocialHubCollapse);
+  }
+
+  // Bind Tab Switchers
+  document.querySelectorAll(".social-tab").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const tabName = e.target.dataset.tab;
+      switchSocialTab(tabName);
+    });
+  });
+
+  // Add Friend Button
+  const addBtn = document.getElementById("add-friend-btn");
+  if (addBtn) addBtn.addEventListener("click", addNewFriend);
+
+  const addInput = document.getElementById("add-friend-name");
+  if (addInput) {
+    addInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addNewFriend();
+    });
+  }
+
+  // Chat Send Message
+  const sendBtn = document.getElementById("active-chat-send-btn");
+  if (sendBtn) sendBtn.addEventListener("click", sendDirectMessage);
+  
+  const chatInput = document.getElementById("active-chat-input-field");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendDirectMessage();
+    });
+  }
+
+  // Squad Message Sender
+  const squadSendBtn = document.getElementById("squad-chat-send-btn");
+  if (squadSendBtn) squadSendBtn.addEventListener("click", sendSquadMessage);
+  
+  const squadInput = document.getElementById("squad-chat-input-field");
+  if (squadInput) {
+    squadInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendSquadMessage();
+    });
+  }
+
+  // Squad Channel Switchers
+  document.querySelectorAll(".squad-channel-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      document.querySelectorAll(".squad-channel-btn").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      
+      const channel = e.target.dataset.squad;
+      socialState.activeSquadTab = channel;
+      renderSquadChatRoom();
+    });
+  });
+
+  // Load Initial Social Renderings
+  renderFriendsList();
+  renderDirectChatsList();
+  renderSquadChatRoom();
+  updateOnlineCountBadge();
+}
+
+function toggleSocialHubCollapse() {
+  const hub = document.getElementById("social-chat-hub");
+  if (!hub) return;
+  hub.classList.toggle("collapsed");
+}
+
+function expandSocialHub() {
+  const hub = document.getElementById("social-chat-hub");
+  if (hub) hub.classList.remove("collapsed");
+}
+
+function switchSocialTab(tabName) {
+  document.querySelectorAll(".social-tab").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".social-tab-content").forEach(c => c.classList.remove("active"));
+
+  const targetTab = document.querySelector(`.social-tab[data-tab="${tabName}"]`);
+  if (targetTab) targetTab.classList.add("active");
+
+  const targetContent = document.getElementById(`social-tab-${tabName}`);
+  if (targetContent) targetContent.classList.add("active");
+
+  // If opening chats and there's an active room, focus input
+  if (tabName === "chats" && socialState.activeChatUser) {
+    document.getElementById("active-chat-input-field")?.focus();
+  }
+}
+
+function updateOnlineCountBadge() {
+  const badge = document.getElementById("social-online-count");
+  if (!badge) return;
+
+  const onlineCount = socialState.friends.filter(f => f.online).length;
+  badge.textContent = `${onlineCount} Online`;
+}
+
+// Render Tab 1: Friends List
+function renderFriendsList() {
+  const container = document.getElementById("social-friends-list");
+  if (!container) return;
+
+  if (socialState.friends.length === 0) {
+    container.innerHTML = `<p style="color:var(--text-muted); text-align:center; font-size:0.75rem; padding: 20px 0;">No friends found. Add one below!</p>`;
+    return;
+  }
+
+  container.innerHTML = socialState.friends.map(f => {
+    const statusDot = f.online ? `<span class="pill-dot" style="background-color: var(--success); width:6px; height:6px; margin-right:4px;"></span>` : `<span class="pill-dot" style="background-color: var(--text-muted); width:6px; height:6px; margin-right:4px;"></span>`;
+    
+    return `
+      <div class="friend-item-row">
+        <div class="friend-card-left">
+          <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${f.avatar}" alt="${f.username}">
+          <div class="friend-text-info">
+            <span>${f.username}</span>
+            <span style="display:flex; align-items:center;">${statusDot} ${f.statusText}</span>
+          </div>
+        </div>
+        <button class="friend-chat-action-btn" onclick="openDirectChatRoom('${f.username}')">Chat</button>
+      </div>
+    `;
+  }).join("");
+}
+
+// Add Friend dynamically
+function addNewFriend() {
+  const inputEl = document.getElementById("add-friend-name");
+  if (!inputEl) return;
+  const name = inputEl.value.trim();
+  if (!name) return;
+
+  if (socialState.friends.some(f => f.username.toLowerCase() === name.toLowerCase())) {
+    showToast("That user is already in your friends list!", "warning");
+    return;
+  }
+
+  const newFriend = {
+    username: name,
+    avatar: name,
+    online: true,
+    statusText: "Idle in lobby"
+  };
+
+  socialState.friends.push(newFriend);
+  renderFriendsList();
+  updateOnlineCountBadge();
+  inputEl.value = "";
+  
+  showToast(`Added ${name} as a new online friend!`, "success");
+}
+
+// Tab 2: Direct Messages Rooms List
+function renderDirectChatsList() {
+  const container = document.getElementById("chat-rooms-list");
+  if (!container) return;
+
+  // Compile list of chats (anyone with DM history)
+  const dmUsers = Object.keys(socialState.dms);
+  
+  container.innerHTML = dmUsers.map(username => {
+    const friend = socialState.friends.find(f => f.username === username) || { avatar: username };
+    const isActive = socialState.activeChatUser === username ? "active" : "";
+
+    return `
+      <button class="chat-room-tab-btn ${isActive}" onclick="openDirectChatRoom('${username}')">
+        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${friend.avatar}" alt="${username}">
+        <span>${username}</span>
+      </button>
+    `;
+  }).join("");
+}
+
+window.openDirectChatRoom = function(username) {
+  socialState.activeChatUser = username;
+  
+  // Ensure chat history array exists
+  if (!socialState.dms[username]) {
+    socialState.dms[username] = [];
+  }
+
+  // Switch to Chats Tab
+  switchSocialTab("chats");
+  renderDirectChatsList();
+  renderActiveDMThread();
+};
+
+// Render DM Conversation bubbles
+function renderActiveDMThread() {
+  const placeholder = document.getElementById("chat-no-active-placeholder");
+  const container = document.getElementById("chat-active-container");
+
+  if (!socialState.activeChatUser) {
+    if (placeholder) placeholder.style.display = "flex";
+    if (container) container.style.display = "none";
+    return;
+  }
+
+  if (placeholder) placeholder.style.display = "none";
+  if (container) container.style.display = "flex";
+
+  const username = socialState.activeChatUser;
+  const friend = socialState.friends.find(f => f.username === username) || { online: true };
+
+  document.getElementById("active-chat-username").textContent = username;
+  
+  const statusBadge = document.getElementById("active-chat-status");
+  statusBadge.textContent = friend.online ? "online" : "offline";
+  statusBadge.style.color = friend.online ? "var(--success)" : "var(--text-muted)";
+
+  const messagesFeed = document.getElementById("active-chat-messages");
+  if (messagesFeed) {
+    const chatLogs = socialState.dms[username];
+    if (chatLogs.length === 0) {
+      messagesFeed.innerHTML = `<p style="color:var(--text-muted); font-size:0.72rem; text-align:center; margin-top:20px;">No messages. Send a message to start direct chat!</p>`;
+    } else {
+      messagesFeed.innerHTML = chatLogs.map(m => {
+        const sideClass = m.sender === "me" ? "sent" : "received";
+        return `
+          <div class="chat-bubble ${sideClass}">
+            <span>${m.text.replace(/\n/g, "<br>")}</span>
+            <span class="chat-bubble-time">${m.time}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Scroll to bottom smoothly
+    setTimeout(() => {
+      messagesFeed.scrollTop = messagesFeed.scrollHeight;
+    }, 50);
+  }
+}
+
+// Send Direct Message
+function sendDirectMessage() {
+  const inputEl = document.getElementById("active-chat-input-field");
+  if (!inputEl) return;
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  if (!clerkAuthenticationGuard("send direct messages")) return;
+
+  const username = socialState.activeChatUser;
+  if (!username) return;
+
+  // Append Sent Message
+  const now = new Date();
+  const timeText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+  const sentMsg = { sender: "me", text: text, time: timeText };
+  socialState.dms[username].push(sentMsg);
+  
+  inputEl.value = "";
+  renderActiveDMThread();
+
+  // Award +10 XP to Clerk User for active social networking!
+  if (appState.clerkUser) {
+    appState.clerkUser.xp += 10;
+    setStorage("gamin_clerk_user", appState.clerkUser);
+    syncClerkAuthStateUI();
+  }
+
+  // Trigger simulated typing reply
+  const typingIndicator = document.getElementById("active-chat-typing");
+  const messagesFeed = document.getElementById("active-chat-messages");
+
+  if (typingIndicator) {
+    typingIndicator.style.display = "flex";
+    if (messagesFeed) messagesFeed.scrollTop = messagesFeed.scrollHeight;
+  }
+
+  setTimeout(() => {
+    if (typingIndicator) typingIndicator.style.display = "none";
+
+    // Random gamer response
+    const replyIdx = Math.floor(Math.random() * GAMER_REPLIES.length);
+    const receivedMsg = { sender: username, text: GAMER_REPLIES[replyIdx], time: timeText };
+    
+    socialState.dms[username].push(receivedMsg);
+    renderActiveDMThread();
+
+    showToast(`New message from ${username}`, "info");
+  }, 1000);
+}
+
+// Hook used by Stories replies to automatically start DM
+function forwardMessageToDM(username, msgText) {
+  // Add user to DM rooms lists
+  if (!socialState.dms[username]) {
+    socialState.dms[username] = [];
+  }
+
+  const now = new Date();
+  const timeText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const storyMsg = { sender: "me", text: msgText, time: timeText };
+  socialState.dms[username].push(storyMsg);
+}
+
+// Tab 3: Squad Channels Group chat
+function renderSquadChatRoom() {
+  const container = document.getElementById("squad-chat-messages");
+  if (!container) return;
+
+  const activeChannel = socialState.activeSquadTab;
+  const logs = socialState.squads[activeChannel] || [];
+
+  container.innerHTML = logs.map(msg => {
+    const isMe = msg.user === "me";
+    const sideClass = isMe ? "self" : "";
+    const nameLabel = isMe && appState.clerkUser ? appState.clerkUser.username : msg.user;
+    const initialAvatar = nameLabel.charAt(0).toUpperCase();
+
+    return `
+      <div class="squad-chat-msg-row ${sideClass}">
+        ${!isMe ? `<img class="squad-chat-msg-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=${msg.user}" alt="${nameLabel}">` : ""}
+        <div class="squad-chat-msg-content">
+          <div class="squad-chat-msg-header">
+            <span class="squad-chat-msg-user">${nameLabel}</span>
+            <span class="squad-chat-msg-time">${msg.time}</span>
+          </div>
+          <p class="squad-chat-msg-text">${msg.text}</p>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  setTimeout(() => {
+    container.scrollTop = container.scrollHeight;
+  }, 50);
+}
+
+function sendSquadMessage() {
+  const inputEl = document.getElementById("squad-chat-input-field");
+  if (!inputEl) return;
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  if (!clerkAuthenticationGuard("post to squad rooms")) return;
+
+  const now = new Date();
+  const timeText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const activeChannel = socialState.activeSquadTab;
+
+  const newMsg = {
+    user: "me",
+    text: text,
+    time: timeText
+  };
+
+  socialState.squads[activeChannel].push(newMsg);
+  inputEl.value = "";
+  renderSquadChatRoom();
+}
+
