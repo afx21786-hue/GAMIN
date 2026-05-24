@@ -47,27 +47,6 @@
   --max-width: 1440px;
 }
 
-/* Light Theme Variables Switch */
-body.light-theme {
-  --bg-app: hsl(140, 15%, 97%);
-  --bg-surface: hsl(0, 0%, 100%);
-  --bg-surface-elevated: hsl(140, 10%, 93%);
-  
-  --border-color: hsl(140, 10%, 88%);
-  --border-color-hover: hsl(142, 20%, 80%);
-  
-  --primary: hsl(142, 50%, 34%);
-  --primary-hover: hsl(142, 60%, 28%);
-  --primary-glow: hsla(142, 50%, 34%, 0.06);
-  
-  --text-primary: hsl(140, 20%, 14%);
-  --text-secondary: hsl(140, 10%, 38%);
-  --text-muted: hsl(140, 5%, 54%);
-  
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glow-shadow: none;
-}
-
 /* 2. Reset & Base Typography */
 * {
   margin: 0;
@@ -585,18 +564,50 @@ body.splash-active {
   border-color: var(--border-color-hover);
 }
 
-.sun-icon {
-  display: block;
+/* Contextual Header Action Button in Navbar */
+.header-action-btn {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  box-shadow: 0 0 10px var(--primary-glow);
 }
-.moon-icon {
+
+/* Right Sidebar Collapse Trigger Active State in Navbar */
+#right-sidebar-toggle-btn.active {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+/* Navbar Topics/Flairs Bar next to search input */
+.navbar-topics-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+  max-width: 500px;
+  overflow-x: auto;
+  scrollbar-width: none; /* Hide scrollbars */
+  padding-bottom: 2px;
+}
+
+.navbar-topics-bar::-webkit-scrollbar {
   display: none;
 }
 
-body.light-theme .sun-icon {
-  display: none;
+.navbar-topics-bar .flair-chip {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  border-radius: 99px;
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
 }
-body.light-theme .moon-icon {
-  display: block;
+
+.navbar-topics-bar .flair-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 0 8px var(--primary-glow);
 }
 
 /* Hamburger mobile button */
@@ -667,6 +678,66 @@ body.light-theme .moon-icon {
 
 .right-sidebar {
   width: 310px;
+  transition: width var(--transition-speed) var(--transition-elastic), 
+              opacity var(--transition-speed) ease, 
+              transform var(--transition-speed) ease, 
+              margin-left var(--transition-speed) ease;
+  position: relative;
+  overflow: visible; /* allows handle to overflow to the left */
+}
+
+.right-sidebar.collapsed {
+  width: 0px;
+  margin-left: -24px; /* closes the gap in grid layout */
+  opacity: 0;
+  transform: translateX(30px);
+  pointer-events: none;
+}
+
+.right-sidebar.collapsed .sidebar-sticky {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.right-sidebar .sidebar-sticky {
+  transition: opacity 0.22s ease-in-out;
+}
+
+/* Sleek Floating Right Sidebar Handle Chevron */
+.right-sidebar-handle {
+  position: absolute;
+  left: -12px;
+  top: 24px;
+  z-index: 100;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.22s ease-in-out;
+}
+
+.right-sidebar-handle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+  transform: scale(1.1);
+}
+
+.right-sidebar-handle svg {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: rotate(180deg); /* point left (chevron-right flipped) to indicate click to collapse */
+}
+
+/* When collapsed, point right to indicate click to expand */
+.right-sidebar.collapsed .right-sidebar-handle svg {
+  transform: rotate(0deg);
 }
 
 /* Left Sidebar Elements */
@@ -1763,19 +1834,59 @@ textarea.form-input {
 
 /* 12. Right Sidebar Widgets */
 .sidebar-widget {
-  padding: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--border-color);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: all 0.25s var(--transition-elastic);
+}
+
+/* Active Quests Widget - Cyber Gold Accent */
+.right-sidebar .sidebar-widget:nth-child(1) {
+  border-color: rgba(234, 179, 8, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(234, 179, 8, 0.05);
+}
+.right-sidebar .sidebar-widget:nth-child(1):hover {
+  border-color: rgba(234, 179, 8, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 15px rgba(234, 179, 8, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Verified Devs Widget - Cyber Cyan Accent */
+.right-sidebar .sidebar-widget:nth-child(2) {
+  border-color: rgba(0, 240, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(0, 240, 255, 0.05);
+}
+.right-sidebar .sidebar-widget:nth-child(2):hover {
+  border-color: rgba(0, 240, 255, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 15px rgba(0, 240, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Trending Now Widget - Cyber Purple Accent */
+.right-sidebar .sidebar-widget:nth-child(3) {
+  border-color: rgba(168, 85, 247, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 10px rgba(168, 85, 247, 0.05);
+}
+.right-sidebar .sidebar-widget:nth-child(3):hover {
+  border-color: rgba(168, 85, 247, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 0 15px rgba(168, 85, 247, 0.15);
+  transform: translateY(-2px);
 }
 
 .widget-title {
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 4px;
+  padding-bottom: 6px;
+  text-transform: uppercase;
 }
 
 .quick-challenge-list {

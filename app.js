@@ -403,7 +403,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   syncClerkAuthStateUI();
   router();
-  initTheme();
+  initRightSidebarCollapse();
   
   // Initialize Instagram Feed, Stories, and Social Chat systems
   initStoriesSystem();
@@ -412,6 +412,49 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderCurrentView(hash) {
+  const headerActionBtn = document.getElementById("header-action-btn");
+  const topicsBar = document.getElementById("navbar-topics-bar");
+
+  // A. Toggle Navbar Q&A Topic Chips next to Search
+  if (topicsBar) {
+    topicsBar.style.display = (hash === "ask") ? "flex" : "none";
+  }
+
+  // B. Toggle Contextual Actions (+ Create Post / + New Post)
+  if (headerActionBtn) {
+    if (hash === "home") {
+      headerActionBtn.style.display = "inline-flex";
+      headerActionBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align: middle; margin-right: 4px;">
+          <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Create Post
+      `;
+      headerActionBtn.onclick = () => {
+        if (clerkAuthenticationGuard("create strategy articles")) {
+          const modal = document.getElementById("post-creator-modal");
+          if (modal) modal.classList.add("active");
+        }
+      };
+    } else if (hash === "ask") {
+      headerActionBtn.style.display = "inline-flex";
+      headerActionBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="14" height="14" style="vertical-align: middle; margin-right: 4px;">
+          <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        New Post
+      `;
+      headerActionBtn.onclick = () => {
+        if (clerkAuthenticationGuard("post to r/AskGamers")) {
+          const modal = document.getElementById("ask-modal");
+          if (modal) modal.classList.add("active");
+        }
+      };
+    } else {
+      headerActionBtn.style.display = "none";
+    }
+  }
+
   switch (hash) {
     case "home":
       renderFeed();
@@ -1417,22 +1460,35 @@ function renderRightSidebarWidget() {
 
 // --- 5. INTERACTIVE EVENT HANDLERS ---
 
-// A. Theme Switcher Manager
-function initTheme() {
-  const themeToggle = document.getElementById("theme-toggle");
-  if (!themeToggle) return;
+// A. Collapsible Right Sidebar Drawer Manager (State persisted in localStorage)
+function initRightSidebarCollapse() {
+  const rightSidebar = document.getElementById("sidebar-right");
+  const toggleBtn = document.getElementById("right-sidebar-toggle-btn");
+  const handleBtn = document.getElementById("right-sidebar-handle");
 
-  const savedTheme = localStorage.getItem("gamin_theme") || "dark";
-  if (savedTheme === "light") {
-    document.body.classList.add("light-theme");
+  if (!rightSidebar) return;
+
+  // Load and apply initial state from localStorage (default: expanded / false)
+  const isCollapsed = localStorage.getItem("gamin_right_sidebar_collapsed") === "true";
+  if (isCollapsed) {
+    rightSidebar.classList.add("collapsed");
+    if (toggleBtn) toggleBtn.classList.add("active");
   }
 
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light-theme");
-    const activeTheme = document.body.classList.contains("light-theme") ? "light" : "dark";
-    localStorage.setItem("gamin_theme", activeTheme);
-    showToast(`Theme changed to ${activeTheme}.`, "info");
-  });
+  const toggleSidebar = () => {
+    rightSidebar.classList.toggle("collapsed");
+    const nowCollapsed = rightSidebar.classList.contains("collapsed");
+    localStorage.setItem("gamin_right_sidebar_collapsed", nowCollapsed);
+    
+    if (toggleBtn) {
+      toggleBtn.classList.toggle("active", nowCollapsed);
+    }
+    
+    showToast(nowCollapsed ? "Activities panel closed" : "Activities panel opened", "info");
+  };
+
+  if (toggleBtn) toggleBtn.addEventListener("click", toggleSidebar);
+  if (handleBtn) handleBtn.addEventListener("click", toggleSidebar);
 }
 
 // B. Mobile Hamburger menu trigger (Toggles left sidebar menu)
@@ -1715,12 +1771,14 @@ document.addEventListener("click", (e) => {
     renderQuestions();
   }
 
-  // Flair filter chips (banner bar)
+  // Flair filter chips (banner bar & top navbar)
   const flairBtn = e.target.closest(".flair-chip");
   if (flairBtn && flairBtn.dataset.flair) {
-    document.querySelectorAll(".flair-chip").forEach(b => b.classList.remove("active"));
-    flairBtn.classList.add("active");
-    askCurrentFlair = flairBtn.dataset.flair;
+    const selectedFlair = flairBtn.dataset.flair;
+    document.querySelectorAll(".flair-chip").forEach(b => {
+      b.classList.toggle("active", b.dataset.flair === selectedFlair);
+    });
+    askCurrentFlair = selectedFlair;
     renderQuestions();
   }
 
