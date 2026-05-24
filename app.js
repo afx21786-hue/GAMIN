@@ -1483,8 +1483,6 @@ function initRightSidebarCollapse() {
     if (toggleBtn) {
       toggleBtn.classList.toggle("active", nowCollapsed);
     }
-    
-    showToast(nowCollapsed ? "Activities panel closed" : "Activities panel opened", "info");
   };
 
   if (toggleBtn) toggleBtn.addEventListener("click", toggleSidebar);
@@ -1508,7 +1506,7 @@ if (searchInput) {
     currentSearchQuery = e.target.value;
     const currentHash = window.location.hash.slice(1);
     
-    if (!["home", "challenges"].includes(currentHash)) {
+    if (!["home", "challenges", "ask"].includes(currentHash)) {
       window.location.hash = "#home";
     } else {
       renderCurrentView(currentHash);
@@ -2043,16 +2041,17 @@ if (logoLink && leftSidebar) {
     logoLink.classList.toggle("logo-trigger-active");
     const isCollapsed = leftSidebar.classList.contains("collapsed");
     localStorage.setItem("gamin_sidebar_collapsed", isCollapsed);
-    showToast(isCollapsed ? "Sidebar collapsed" : "Sidebar expanded", "info");
   });
 }
 
 
 // --- 8. HTML5 CANVAS PORTFOLIO EXPORTER (MINIMALIST CODE CODES) ---
-const downloadBtn = document.getElementById("download-passport-btn");
-if (downloadBtn) {
-  downloadBtn.addEventListener("click", () => {
-    generatePassportCardImage();
+const downloadHeaderBtn = document.getElementById("download-passport-header-btn");
+if (downloadHeaderBtn) {
+  downloadHeaderBtn.addEventListener("click", () => {
+    if (clerkAuthenticationGuard("download your passport portfolio")) {
+      generatePassportCardImage();
+    }
   });
 }
 
@@ -2422,6 +2421,9 @@ function initStoriesSystem() {
       if (e.key === "Enter") sendStoryDMReply();
     });
   }
+
+  // Expose launchStoryViewer to global window context for inline onclick support
+  window.launchStoryViewer = launchStoryViewer;
 }
 
 // Render horizontal circular circles
