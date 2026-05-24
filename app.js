@@ -2153,32 +2153,52 @@ if (createStoryForm) {
   createStoryForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const captionVal = document.getElementById("story-caption").value.trim();
-    const categoryVal = document.getElementById("story-image-category").value;
+    const fileInput = document.getElementById("story-image-file");
+    const urlInput = document.getElementById("story-image-url");
 
     if (!captionVal) return;
 
-    // Map selected category to gaming Unsplash URL
-    let imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop";
-    if (categoryVal === "setup") {
-      imageUrl = "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop";
-    } else if (categoryVal === "dev") {
-      imageUrl = "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=800&auto=format&fit=crop";
-    } else if (categoryVal === "hardware") {
-      imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop";
-    }
+    const processStoryCreation = (resolvedImageUrl) => {
+      const user = appState.clerkUser;
 
-    // Update the 'self' story in STORIES_DATA
-    const selfStory = STORIES_DATA.find(s => s.type === "self");
-    if (selfStory) {
-      selfStory.image = imageUrl;
-      selfStory.caption = captionVal;
-      selfStory.unviewed = true; // Make it glow again!
-      selfStory.timestamp = "Just now";
-    }
+      // Update the 'self' story in STORIES_DATA
+      const selfStory = STORIES_DATA.find(s => s.type === "self");
+      if (selfStory) {
+        selfStory.image = resolvedImageUrl;
+        selfStory.caption = captionVal;
+        selfStory.unviewed = true; // Make it glow again!
+        selfStory.timestamp = "Just now";
+        if (user) {
+          selfStory.username = user.username;
+          selfStory.avatar = user.seed;
+        }
+      }
 
-    renderStoriesBar();
-    hideStoryCreatorModal();
-    showToast("Story updated successfully! 🟢 Share complete.", "success");
+      renderStoriesBar();
+      hideStoryCreatorModal();
+      showToast("Story updated successfully! 🟢 Share complete.", "success");
+    };
+
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        processStoryCreation(event.target.result);
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else if (urlInput && urlInput.value.trim()) {
+      processStoryCreation(urlInput.value.trim());
+    } else {
+      // Pick a beautiful random Unsplash gaming image as default
+      const randomGamingImages = [
+        "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format",
+        "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format",
+        "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format",
+        "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=800&auto=format",
+        "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&auto=format"
+      ];
+      const randomUrl = randomGamingImages[Math.floor(Math.random() * randomGamingImages.length)];
+      processStoryCreation(randomUrl);
+    }
   });
 }
 

@@ -1191,13 +1191,12 @@
             <input type="text" id="story-caption" class="form-input" placeholder="e.g. Setting up tactical gameplay profiles! 🎮" required>
           </div>
           <div class="form-group">
-            <label for="story-image-category">Select Background Category:</label>
-            <select id="story-image-category" class="form-input">
-              <option value="gaming">👾 High-Tech Cyber Gaming Setup</option>
-              <option value="setup">🖥️ Minimalist Obsidian Desk Setup</option>
-              <option value="dev">⚙️ Cozy Strategy Development</option>
-              <option value="hardware">🔥 Hardware & GPU Rig</option>
-            </select>
+            <label for="story-image-file">Upload Photo (Instagram Style):</label>
+            <input type="file" id="story-image-file" class="form-input" accept="image/*" style="padding: 8px; background: rgba(255,255,255,0.02); border: 1.5px dashed var(--border-color); cursor: pointer;">
+          </div>
+          <div class="form-group">
+            <label for="story-image-url">Or Paste Image URL (Optional):</label>
+            <input type="url" id="story-image-url" class="form-input" placeholder="e.g. https://images.unsplash.com/photo-...">
           </div>
           <button type="submit" class="btn btn-primary btn-full">Share to Stories</button>
         </form>
