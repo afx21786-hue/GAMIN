@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAMIN — Gamer Community & Portfolio Hub</title>
+  <meta name="description" content="Connect, compete, and showcase your gaming portfolio. Share reviews, accept challenges, build squads, and export your achievements.">
+  
+  <!-- Roboto Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== FULLSCREEN VIDEO SPLASH ===== -->
+  <div id="splash-screen" aria-hidden="true">
+
+    <!-- Fullscreen video -->
+    <video
+      id="splash-video"
+      src="./splash-video.mp4"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+
+    <!-- Overlay: shown if autoplay is blocked — click to play -->
+    <div class="splash-play-gate" id="splash-play-gate">
+      <button class="splash-play-btn" id="splash-play-btn" aria-label="Click to play intro">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+      <p>Tap to start</p>
+    </div>
+
+    <!-- Skip button (bottom-right) -->
+    <button class="splash-skip-btn" id="splash-skip-btn">
+      Skip Intro
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+        <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/>
+      </svg>
+    </button>
+
+  </div>
+  <!-- ===== END VIDEO SPLASH ===== -->
+
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-navbar">
+    <div class="nav-container">
+      
+      <!-- Interactive GAMIN Logo (Toggles left sidebar collapse) -->
+      <a href="javascript:void(0)" class="nav-logo" id="logo-link" title="Toggle left navigation menu">
+        <span class="logo-icon"></span>
+        GAMIN<span class="logo-accent">.</span>
+      </a>
+
+      <!-- Search Input (Reddit Style) -->
+      <div class="nav-search">
+        <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+        <input type="text" id="global-search" placeholder="Search strategy reviews, squads, challenges...">
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="nav-menu" id="nav-menu">
+        <li>
+          <a href="#home" class="nav-link active" id="nav-home">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Feed
+          </a>
+        </li>
+        <li>
+          <a href="#challenges" class="nav-link" id="nav-challenges">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.66 4.39 4.94A5.99 5.99 0 0 0 11 15.9V19H9v2h6v-2h-2v-3.1a5.99 5.99 0 0 0 3.61-2.96C19.08 10.66 21 8.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/>
+            </svg>
+            Challenges
+          </a>
+        </li>
+        <li>
+          <a href="#ask" class="nav-link" id="nav-ask">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M12 2c-5.52 0-10 3.58-10 8 0 2.42 1.35 4.58 3.5 5.92L3 21l4.58-1.5c1.37.5 2.91.8 4.42.8 5.52 0 10-3.58 10-8s-4.48-8-10-8zm1 11h-2v-2h2v2zm0-4h-2V7h2v2z"/>
+            </svg>
+            Ask
+          </a>
+        </li>
+        <li>
+          <a href="#achievements" class="nav-link" id="nav-achievements">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>
+            </svg>
+            Achievements
+          </a>
+        </li>
+        <li>
+          <a href="#profile" class="nav-link" id="nav-profile">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            Profile
+          </a>
+        </li>
+        <li>
+          <a href="#contact" class="nav-link" id="nav-contact">
+            <svg class="nav-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            Contact
+          </a>
+        </li>
+      </ul>
+
+      <!-- Navbar Action Utilities & Clerk Auth Integration -->
+      <div class="nav-actions">
+        <!-- Light / Dark Toggle -->
+        <button id="theme-toggle" class="nav-action-btn" aria-label="Toggle light and dark mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42zM4 10.5H1v2h3v-2zm9-7h-2v3h2v-3zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.75l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zm-12.5-1.4l-1.79 1.79 1.41 1.41 1.8-1.79-1.42-1.41zM23 10.5h-3v2h3v-2zm-11-6c-3.59 0-6.5 2.91-6.5 6.5s2.91 6.5 6.5 6.5 6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5zm0 11c-2.48 0-4.5-2.02-4.5-4.5s2.02-4.5 4.5-4.5 4.5 2.02 4.5 4.5-2.02 4.5-4.5 4.5zm1-3.5h-2v3h2v-3z"/>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M12.3 22c5.52 0 10-4.48 10-10 0-2.2-.72-4.22-1.92-5.85C20.02 6.05 19.52 6 19 6c-5.25 0-9.5 4.25-9.5 9.5 0 .52.05 1.02.15 1.52A9.973 9.973 0 0 1 12.3 22z"/>
+          </svg>
+        </button>
+
+        <!-- Dynamic Clerk Auth Section -->
+        <div class="clerk-auth-section" id="clerk-auth-section">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+
+        <!-- Hamburger Icon for Mobile -->
+        <button id="hamburger-btn" class="nav-action-btn hamburger" aria-label="Toggle navigation menu">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </button>
+      </div>
+      
+    </div>
+  </nav>
+
+  <!-- Global Application Layout -->
+  <div class="app-layout">
+    
+    <!-- LEFT SIDEBAR (Discord/Reddit inspired navigation & community widgets) -->
+    <aside class="left-sidebar" id="sidebar-left">
+      <div class="sidebar-sticky">
+        
+        <!-- Quick Profile Card (Gated for Clerk log in) -->
+        <div class="sidebar-user-card glass-panel" id="sidebar-profile-card">
+          <!-- Rendered dynamically depending on Auth State -->
+        </div>
+
+        <!-- Navigation Lists (Discord Channel visual style) -->
+        <div class="sidebar-group">
+          <h5 class="sidebar-title">NAVIGATION</h5>
+          <ul class="sidebar-links">
+            <li>
+              <a href="#home" class="sb-link active" id="sb-link-home">
+                <span class="sb-hash">#</span> feed-all
+              </a>
+            </li>
+            <li>
+              <a href="#challenges" class="sb-link" id="sb-link-challenges">
+                <span class="sb-hash">#</span> challenges-arena
+              </a>
+            </li>
+            <li>
+              <a href="#ask" class="sb-link" id="sb-link-ask">
+                <span class="sb-hash">#</span> ask-gamers
+              </a>
+            </li>
+            <li>
+              <a href="#achievements" class="sb-link" id="sb-link-achievements">
+                <span class="sb-hash">#</span> accomplishments
+              </a>
+            </li>
+            <li>
+              <a href="#profile" class="sb-link" id="sb-link-profile">
+                <span class="sb-hash">#</span> gamer-portfolio
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Filter Categories (Reddit-like subreddits structure) -->
+        <div class="sidebar-group">
+          <h5 class="sidebar-title">COMMUNITIES</h5>
+          <div class="community-pills">
+            <button class="community-pill active" data-filter="all">
+              <span class="pill-dot" style="background-color: var(--primary);"></span>
+              All Posts
+            </button>
+            <button class="community-pill" data-filter="review">
+              <span class="pill-dot" style="background-color: #3b82f6;"></span>
+              Reviews
+            </button>
+            <button class="community-pill" data-filter="tip">
+              <span class="pill-dot" style="background-color: #eab308;"></span>
+              Tips & Strategies
+            </button>
+            <button class="community-pill" data-filter="squad">
+              <span class="pill-dot" style="background-color: #a855f7;"></span>
+              Squad Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER DYNAMIC FEED (Central Column) -->
+    <main class="main-content" id="main-content-flow">
+      
+      <!-- ================= PAGE 1: HOME FEED VIEW ================= -->
+      <section id="home-view" class="page-view active">
+        <!-- Feed Top Controls -->
+        <div class="feed-header glass-panel">
+          <div class="feed-title-area">
+            <h1>Community Feed</h1>
+            <p>Read strategy articles, clean game reviews, and squad recruitment listings.</p>
+          </div>
+          <button class="btn btn-primary" id="open-post-creator-btn">
+            <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 6px;">
+              <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Create Post
+          </button>
+        </div>
+
+        <!-- Category Filter Bar (Instagram/Reddit layout mix) -->
+        <div class="feed-filter-bar">
+          <button class="filter-btn active" data-category="all">All Feed</button>
+          <button class="filter-btn" data-category="review">Reviews</button>
+          <button class="filter-btn" data-category="tip">Tips & Tricks</button>
+          <button class="filter-btn" data-category="squad">Squads</button>
+        </div>
+
+        <!-- The Live Feed List -->
+        <div class="feed-container" id="feed-container">
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Assembling Feed...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 2: CHALLENGES ARENA ================= -->
+      <section id="challenges-view" class="page-view">
+        <div class="feed-header glass-panel">
+          <div class="feed-title-area">
+            <h1>Challenges Arena</h1>
+            <p>Accept daily challenges issued by devs & community members, level up your stats!</p>
+          </div>
+        </div>
+
+        <!-- Challenge Stats Banner -->
+        <div class="challenges-status-grid">
+          <div class="status-card glass-panel">
+            <span class="status-val" id="active-challenges-count">2</span>
+            <span class="status-lbl">Active Challenges</span>
+          </div>
+          <div class="status-card glass-panel">
+            <span class="status-val" id="completed-challenges-count">5</span>
+            <span class="status-lbl">Completed Quests</span>
+          </div>
+          <div class="status-card glass-panel">
+            <span class="status-val" id="achievements-score-xp">3,450 XP</span>
+            <span class="status-lbl">Earned XP</span>
+          </div>
+        </div>
+
+        <!-- Challenge Filter Menu -->
+        <div class="feed-filter-bar">
+          <button class="filter-challenge-btn active" data-diff="all">All Quests</button>
+          <button class="filter-challenge-btn" data-diff="Easy">Easy</button>
+          <button class="filter-challenge-btn" data-diff="Medium">Medium</button>
+          <button class="filter-challenge-btn" data-diff="Hard">Hardcore</button>
+        </div>
+
+        <!-- Challenges Grid -->
+        <div class="challenges-grid" id="challenges-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- ================= PAGE Q&A: ASK GAMERS VIEW ================= -->
+      <section id="ask-view" class="page-view">
+
+        <!-- Reddit-style Banner Header -->
+        <div class="ask-banner glass-panel">
+          <div class="ask-banner-inner">
+            <div class="ask-banner-icon">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none">
+                <circle cx="12" cy="12" r="11" stroke="var(--primary)" stroke-width="1.5"/>
+                <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="9" cy="13" r="1.2" fill="var(--primary)"/>
+                <circle cx="15" cy="13" r="1.2" fill="var(--primary)"/>
+                <path d="M9.5 16c.73.63 1.73 1 2.5 1s1.77-.37 2.5-1" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="ask-banner-text">
+              <h1>r/AskGamers</h1>
+              <p>Ask anything. Get answers from real gamers & devs in the GAMIN community.</p>
+            </div>
+            <button class="btn btn-primary" id="open-ask-modal-btn">
+              <svg viewBox="0 0 24 24" width="15" height="15" style="margin-right:6px;">
+                <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              New Post
+            </button>
+          </div>
+          <!-- Flair / Topic Filter Bar -->
+          <div class="ask-flair-bar" id="ask-flair-bar">
+            <button class="flair-chip active" data-flair="all">🌐 All Topics</button>
+            <button class="flair-chip" data-flair="gameplay">🎮 Gameplay</button>
+            <button class="flair-chip" data-flair="gamedev">⚙️ Game Dev</button>
+            <button class="flair-chip" data-flair="tips">💡 Tips</button>
+            <button class="flair-chip" data-flair="hardware">🖥️ Hardware</button>
+            <button class="flair-chip" data-flair="rant">🔥 Rant</button>
+            <button class="flair-chip" data-flair="discussion">💬 Discussion</button>
+          </div>
+        </div>
+
+        <!-- Reddit Two-Column Layout -->
+        <div class="ask-reddit-layout">
+
+          <!-- LEFT: Thread Feed Column -->
+          <div class="ask-threads-col">
+            <!-- Sort Tabs Bar -->
+            <div class="ask-sort-bar glass-panel">
+              <button class="sort-tab active" data-sort="hot">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M13.5 .67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+                Hot
+              </button>
+              <button class="sort-tab" data-sort="new">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                New
+              </button>
+              <button class="sort-tab" data-sort="top">
+                <svg viewBox="0 0 24 24" width="14" height="14"><path fill="currentColor" d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
+                Top
+              </button>
+              <div class="sort-count" id="ask-thread-count">— posts</div>
+            </div>
+
+            <!-- Q&A Thread Cards -->
+            <div id="ask-container">
+              <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Loading threads...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Community Sidebar -->
+          <aside class="ask-community-sidebar">
+            <!-- About Box -->
+            <div class="ask-sidebar-card glass-panel">
+              <div class="ask-sidebar-card-header">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="var(--primary)" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                About r/AskGamers
+              </div>
+              <p class="ask-sidebar-about">A space for all gamers and devs to ask questions, share knowledge, and help each other level up — no toxicity, only good vibes.</p>
+              <div class="ask-sidebar-stats">
+                <div class="sidebar-stat-item">
+                  <span class="stat-num" id="ask-stat-members">3,218</span>
+                  <span class="stat-label">Members</span>
+                </div>
+                <div class="sidebar-stat-item">
+                  <span class="stat-num" style="color: var(--success);">● <span id="ask-stat-online">142</span></span>
+                  <span class="stat-label">Online</span>
+                </div>
+              </div>
+              <div class="ask-sidebar-divider"></div>
+              <p class="ask-sidebar-created">📅 Created May 2026</p>
+              <button class="btn btn-primary" id="open-ask-modal-btn-2" style="width:100%; margin-top:12px;">
+                + New Post
+              </button>
+            </div>
+
+            <!-- Community Rules -->
+            <div class="ask-sidebar-card glass-panel">
+              <div class="ask-sidebar-card-header">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="var(--primary)" d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                Community Rules
+              </div>
+              <ol class="ask-rules-list">
+                <li>Be respectful to all gamers & developers</li>
+                <li>Keep questions gaming-related</li>
+                <li>No spam or self-promotion</li>
+                <li>Tag your post with the right flair</li>
+                <li>Search before asking duplicate questions</li>
+              </ol>
+            </div>
+
+            <!-- Hot Tags -->
+            <div class="ask-sidebar-card glass-panel">
+              <div class="ask-sidebar-card-header">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="var(--primary)" d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>
+                Popular Tags
+              </div>
+              <div class="ask-hot-tags">
+                <span class="hot-tag" data-flair="gameplay">🎮 gameplay</span>
+                <span class="hot-tag" data-flair="tips">💡 tips</span>
+                <span class="hot-tag" data-flair="gamedev">⚙️ gamedev</span>
+                <span class="hot-tag" data-flair="hardware">🖥️ hardware</span>
+                <span class="hot-tag" data-flair="rant">🔥 rant</span>
+                <span class="hot-tag" data-flair="discussion">💬 discussion</span>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </section>
+
+      <!-- ================= PAGE 3: ACHIEVEMENTS PORTFOLIO ================= -->
+      <section id="achievements-view" class="page-view">
+        <div class="feed-header glass-panel">
+          <div class="feed-title-area">
+            <h1>Gamer Passport Portfolio</h1>
+            <p>Showcase your official gamer portfolio, unlock history, and custom statistics.</p>
+          </div>
+        </div>
+
+        <!-- Logged Out Portal Guard Placeholder -->
+        <div class="auth-required-block glass-panel" id="passport-auth-gate" style="display: none;">
+          <h3>Gaming Passport Locked</h3>
+          <p>Please Sign In using Clerk credentials on GAMIN to unlock your portfolio achievements and export your public Passport Card.</p>
+          <button class="btn btn-primary" onclick="openClerkModal('signin')">Sign In Now</button>
+        </div>
+
+        <!-- Logged In Passport Container -->
+        <div class="passport-layout" id="passport-main-content">
+          <!-- Passport Card (Visual Card containing Gamer achievements - HTML5 Canvas renders this) -->
+          <div class="passport-preview-card glass-panel" id="passport-element">
+            <div class="passport-header">
+              <div class="passport-avatar">
+                <img id="pass-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=GaminGamer" alt="Gamer Badge">
+                <span class="pass-online-dot"></span>
+              </div>
+              <div class="passport-intro">
+                <div class="passport-user-row">
+                  <h2 id="pass-username">Kaelen_Vane</h2>
+                  <span id="pass-role-badge" class="badge-role gamer">PRO GAMER</span>
+                </div>
+                <p class="passport-tagline">“Aim precise, speak little, execute perfectly.”</p>
+                <div class="passport-level-section">
+                  <div class="level-indicator">Level <span id="pass-level">14</span></div>
+                  <div class="progress-bar-container" style="flex: 1; margin-left: 10px;">
+                    <div class="progress-bar-fill" style="width: 72%;"></div>
+                  </div>
+                  <span class="level-xp">3,450 / 5,000 XP</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="passport-divider"></div>
+
+            <div class="passport-body">
+              <div class="passport-stats-grid">
+                <div class="pass-stat">
+                  <div class="pass-stat-num" id="pass-stat-completed">5</div>
+                  <div class="pass-stat-label">Wins</div>
+                </div>
+                <div class="pass-stat">
+                  <div class="pass-stat-num" id="pass-stat-comments">12</div>
+                  <div class="pass-stat-label">Posts Shared</div>
+                </div>
+                <div class="pass-stat">
+                  <div class="pass-stat-num" id="pass-stat-likes">148</div>
+                  <div class="pass-stat-label">Upvotes Recv</div>
+                </div>
+                <div class="pass-stat">
+                  <div class="pass-stat-num">98.4%</div>
+                  <div class="pass-stat-label">Trust Score</div>
+                </div>
+              </div>
+
+              <!-- Unlocked Trophies snippet inside Passport -->
+              <div class="passport-trophies-section">
+                <h4>SPECIALTY BADGES</h4>
+                <div class="passport-badges-strip" id="pass-badges-strip">
+                  <!-- Dynamically populated badge icons -->
+                </div>
+              </div>
+            </div>
+            
+            <div class="passport-footer">
+              <div class="passport-watermark">GAMIN PASSPORT PORTFOLIO</div>
+              <div class="passport-date" id="pass-date-label">JOINED MAY 2026</div>
+            </div>
+          </div>
+
+          <!-- Download Options Area -->
+          <div class="passport-options glass-panel">
+            <h3>Download Gamer Passport</h3>
+            <p class="small-text text-muted">Export your official gaming resume. This compiles a clean, pixel-perfect PNG containing your custom stats, level, avatar, and unlocked achievements directly from the browser canvas. Perfect for profile showcases!</p>
+            
+            <div class="form-group" style="margin-top: 15px;">
+              <label for="custom-card-tagline">Customize Card Tagline:</label>
+              <input type="text" id="custom-card-tagline" class="form-input" value="Aim precise, speak little, execute perfectly.">
+            </div>
+
+            <button class="btn btn-primary btn-full" id="download-passport-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 8px;">
+                <path fill="currentColor" d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+              </svg>
+              Download PNG Portfolio
+            </button>
+          </div>
+        </div>
+
+
+      </section>
+
+      <!-- ================= PAGE 4: PROFILE DETAIL ================= -->
+      <section id="profile-view" class="page-view">
+        
+        <!-- Logged Out Portal Guard Placeholder -->
+        <div class="auth-required-block glass-panel" id="profile-auth-gate" style="display: none; padding: 40px; margin-bottom: 20px;">
+          <h3>Account Portfolio Locked</h3>
+          <p>Please Sign In using Clerk credentials on GAMIN to manage your profile setup, tactical squads, and hardware preferences.</p>
+          <button class="btn btn-primary" onclick="openClerkModal('signin')">Sign In Now</button>
+        </div>
+
+        <!-- Logged In Profile Content -->
+        <div id="profile-main-content">
+          <div class="profile-header-banner" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.4), var(--bg-surface)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000&auto=format&fit=crop&q=60');">
+            <div class="profile-avatar-row">
+              <div class="profile-avatar-wrapper">
+                <img id="prof-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=GaminGamer" alt="Avatar large">
+                <button class="btn-avatar-edit" id="avatar-edit-btn" title="Change Avatar Seed">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="profile-identity-details">
+                <div class="profile-name-edit">
+                  <h2 id="prof-username-display">Kaelen_Vane</h2>
+                  <span id="prof-role-badge" class="badge-role gamer">PRO GAMER</span>
+                </div>
+                <p class="profile-sub-tag">Account Member since 2026</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-layout-grid">
+            <!-- Profile Left Column (Edits & Bio) -->
+            <div class="profile-left-col">
+              <div class="glass-panel profile-card-padding">
+                <h3>Edit Profile Details</h3>
+                <form id="profile-edit-form">
+                  <div class="form-group">
+                    <label for="profile-username-input">Gamer Tag / Username:</label>
+                    <input type="text" id="profile-username-input" class="form-input" value="Kaelen_Vane" required minlength="3">
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-role-input">User Account Type:</label>
+                    <select id="profile-role-input" class="form-input">
+                      <option value="gamer">Gamer (Community Member)</option>
+                      <option value="dev">Game Developer (Publisher)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="profile-bio-input">Personal Tagline:</label>
+                    <textarea id="profile-bio-input" class="form-input" rows="3">Aim precise, speak little, execute perfectly.</textarea>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label>Avatar Visual Seed:</label>
+                    <div style="display: flex; gap: 8px;">
+                      <input type="text" id="profile-avatar-seed" class="form-input" value="GaminGamer">
+                      <button type="button" class="btn btn-secondary" id="randomize-avatar-btn" style="white-space: nowrap;">Randomize</button>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-full">Save Profile Changes</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Profile Right Column (Custom Squad & Game stats) -->
+            <div class="profile-right-col">
+              <!-- Custom Squad Widget -->
+              <div class="glass-panel profile-card-padding" style="margin-bottom: 20px;">
+                <div class="widget-header">
+                  <h3>My Tactical Squad</h3>
+                  <span class="badge-tag squad-badge">RECRUITING</span>
+                </div>
+                <p class="small-text text-muted" style="margin-bottom: 15px;">Your active group for team challenges and multiplayers.</p>
+                
+                <div class="squad-list-vertical" id="squad-members-list">
+                  <!-- Squad details populated dynamically -->
+                </div>
+
+                <div class="passport-divider" style="margin: 15px 0;"></div>
+                
+                <h4>Invite to Squad</h4>
+                <form id="invite-squad-form" style="display: flex; gap: 8px;">
+                  <input type="text" id="invite-squad-username" class="form-input" placeholder="Enter gamer username" required>
+                  <button type="submit" class="btn btn-secondary">Invite</button>
+                </form>
+              </div>
+
+              <!-- Gaming Hardware Portfolio list -->
+              <div class="glass-panel profile-card-padding">
+                <h3>Gaming Setup</h3>
+                <ul class="setup-list">
+                  <li>
+                    <span class="setup-key">Console/Platform:</span>
+                    <span class="setup-val">PC (RTX 4080, Ryzen 7)</span>
+                  </li>
+                  <li>
+                    <span class="setup-key">Primary Genre:</span>
+                    <span class="setup-val">FPS, Roguelikes & Strategy</span>
+                  </li>
+                  <li>
+                    <span class="setup-key">Favorite Game:</span>
+                    <span class="setup-val">Cyberpunk 2077, Valorant</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE 5: CONTACT & FORMS ================= -->
+      <section id="contact-view" class="page-view">
+        <div class="feed-header glass-panel">
+          <div class="feed-title-area">
+            <h1>Join GAMIN Guild & Contact</h1>
+            <p>Need support, want to collaborate as a Game Developer, or register for offline tournaments?</p>
+          </div>
+        </div>
+
+        <div class="contact-layout">
+          <!-- Form Section -->
+          <div class="contact-form-section glass-panel">
+            <h3>Feedback & Registration Form</h3>
+            <p class="small-text text-muted" style="margin-bottom: 20px;">Fill out this form. Inputs are verified in real-time. Once validated, your submission goes live!</p>
+
+            <form id="feedback-form" novalidate>
+              <div class="form-row">
+                <div class="form-group flex-1">
+                  <label for="contact-name">Gamer Name / Full Name:</label>
+                  <input type="text" id="contact-name" class="form-input" placeholder="e.g. John Doe" required>
+                  <span class="error-msg" id="err-contact-name"></span>
+                </div>
+                <div class="form-group flex-1">
+                  <label for="contact-email">Email Address:</label>
+                  <input type="email" id="contact-email" class="form-input" placeholder="name@domain.com" required>
+                  <span class="error-msg" id="err-contact-email"></span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-purpose">Submission Purpose:</label>
+                <select id="contact-purpose" class="form-input">
+                  <option value="feedback">General Website Feedback</option>
+                  <option value="developer">Game Developer Application (Get 'Dev' status)</option>
+                  <option value="bug">Report a Bug / Platform Issue</option>
+                  <option value="tournament">Sign up for Community Tournament</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-message">Your Message:</label>
+                <textarea id="contact-message" class="form-input" rows="5" placeholder="Write details here..." required minlength="10"></textarea>
+                <span class="error-msg" id="err-contact-message"></span>
+              </div>
+
+              <div class="form-checkbox-group">
+                <input type="checkbox" id="contact-terms" required>
+                <label for="contact-terms">I agree to the Community Guidelines and anti-toxicity rules.</label>
+                <span class="error-msg" id="err-contact-terms" style="display: block;"></span>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+                Submit Application
+              </button>
+            </form>
+          </div>
+
+          <!-- Quick FAQ / Support Cards -->
+          <div class="contact-info-section">
+            <div class="glass-panel profile-card-padding" style="margin-bottom: 20px;">
+              <h4>Developers Portal</h4>
+              <p class="small-text text-muted">Publishing a game? Get marked as a verified Game Dev on GAMIN. Verification allows you to pin official strategy reviews, create game testing squads, and launch custom challenges with custom XP pools directly in the challenges list.</p>
+            </div>
+
+            <div class="glass-panel profile-card-padding">
+              <h4>Frequently Asked Questions</h4>
+              <div class="faq-item">
+                <h5>How do I earn XP on GAMIN?</h5>
+                <p>Accept quests inside the "Challenges Arena". Accepting and submitting proofs awards instant XP points which raises your leaderboard rank.</p>
+              </div>
+              <div class="faq-item">
+                <h5>What is the Gamer Passport?</h5>
+                <p>It's your official gaming profile. It aggregates your squad achievements, XP, and badges, and makes them easy to download as an image card.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR (Discord/Instagram inspired online activities & challenges quick links) -->
+    <aside class="right-sidebar" id="sidebar-right">
+      <div class="sidebar-sticky">
+        
+        <!-- Active challenges quick list -->
+        <div class="sidebar-widget glass-panel">
+          <h5 class="widget-title">ACTIVE QUESTS</h5>
+          <div class="quick-challenge-list" id="quick-challenges-widget">
+            <!-- Populated via JS -->
+          </div>
+          <a href="#challenges" class="widget-footer-link">Enter Arena &rarr;</a>
+        </div>
+
+        <!-- Dev Spotlights / Verified Devs (Discord Online style) -->
+        <div class="sidebar-widget glass-panel">
+          <h5 class="widget-title">VERIFIED GAME DEVS</h5>
+          <div class="dev-list">
+            <div class="dev-item">
+              <div class="avatar-sm">
+                <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=AuraGames" alt="Dev avatar">
+                <span class="status-indicator online"></span>
+              </div>
+              <div class="dev-details">
+                <h6>Aura Games</h6>
+                <p class="dev-status">Cozy Puzzle release soon</p>
+              </div>
+            </div>
+            <div class="dev-item">
+              <div class="avatar-sm">
+                <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=RetroStudio" alt="Dev avatar">
+                <span class="status-indicator dnd"></span>
+              </div>
+              <div class="dev-details">
+                <h6>RetroStudio</h6>
+                <p class="dev-status">Designing minimalist UI...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trending hashtags (Reddit-like sidebar) -->
+        <div class="sidebar-widget glass-panel">
+          <h5 class="widget-title">TRENDING NOW</h5>
+          <ul class="trending-tags">
+            <li>
+              <span class="tag-title">#MinimalUI</span>
+              <span class="tag-meta">48.2k interactions</span>
+            </li>
+            <li>
+              <span class="tag-title">#CozyStrategy</span>
+              <span class="tag-meta">12.5k reviews</span>
+            </li>
+            <li>
+              <span class="tag-title">#CleanDesignTips</span>
+              <span class="tag-meta">32.9k strategies</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+  </div> <!-- End App Layout -->
+
+  <!-- ================= OVERLAYS, MODALS & DIALOGS ================= -->
+
+  <!-- 1. POST CREATOR DIALOG -->
+  <div class="modal-overlay" id="post-creator-modal">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3>Create Community Post</h3>
+        <button class="close-modal-btn" id="close-post-modal-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="create-post-form">
+          <div class="form-group">
+            <label for="post-title">Post Title:</label>
+            <input type="text" id="post-title" class="form-input" placeholder="e.g. Design Guidelines for Cozy Isometric Puzzles" required>
+          </div>
+          <div class="form-group">
+            <label for="post-category">Category / Tag:</label>
+            <select id="post-category" class="form-input">
+              <option value="review">Review (Game analysis, ratings)</option>
+              <option value="tip">Tip & Trick (Guides, strategy, secrets)</option>
+              <option value="squad">Squad (LFG, Recruitment, Clan search)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="post-content">Write Content:</label>
+            <textarea id="post-content" class="form-input" rows="6" placeholder="Provide complete reviews, strategy steps, or squad requirements..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="post-image-seed">Visual Header Image Seed (Unsplash Keyword):</label>
+            <input type="text" id="post-image-seed" class="form-input" placeholder="e.g. cozy, strategy, minimalist (optional)">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancel-post-modal-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Publish Post</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASK A QUESTION DIALOG -->
+  <div class="modal-overlay" id="ask-modal">
+    <div class="modal-card glass-panel" style="max-width: 600px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="11" stroke="var(--primary)" stroke-width="1.5" fill="none"/><path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="13" r="1.2" fill="var(--primary)"/><circle cx="15" cy="13" r="1.2" fill="var(--primary)"/><path d="M9.5 16c.73.63 1.73 1 2.5 1s1.77-.37 2.5-1" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <h3>Post to r/AskGamers</h3>
+        </div>
+        <button class="close-modal-btn" id="close-ask-modal-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="ask-question-form">
+          <!-- Flair Selector -->
+          <div class="form-group">
+            <label for="ask-flair-select">Topic Flair</label>
+            <select id="ask-flair-select" class="form-input">
+              <option value="discussion">💬 Discussion</option>
+              <option value="gameplay">🎮 Gameplay</option>
+              <option value="gamedev">⚙️ Game Dev</option>
+              <option value="tips">💡 Tips & Tricks</option>
+              <option value="hardware">🖥️ Hardware</option>
+              <option value="rant">🔥 Rant</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ask-title">Title / Question</label>
+            <input type="text" id="ask-title" class="form-input" placeholder="e.g. What is the single most important rule for puzzle UI?" required minlength="5">
+          </div>
+          <div class="form-group">
+            <label for="ask-content">Body (Optional details)</label>
+            <textarea id="ask-content" class="form-input" rows="5" placeholder="Add context, background, or code snippets here..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancel-ask-modal-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right:5px;"><path fill="currentColor" d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+              Post Question
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CLERK AUTH MODAL (Sign In & Sign Up Panels) -->
+  <div class="modal-overlay" id="clerk-auth-modal">
+    <div class="clerk-card glass-panel" id="clerk-auth-card">
+      <button class="clerk-close-btn" id="clerk-close-btn">&times;</button>
+      
+      <!-- SIGN IN VIEW -->
+      <div id="clerk-signin-view">
+        <div class="clerk-header">
+          <span class="clerk-logo-dot"></span>
+          <h2>Sign in to GAMIN</h2>
+          <p>Welcome back! Please enter your details or sign in using a social network.</p>
+        </div>
+        
+        <!-- Social Logins (SSO) -->
+        <div class="clerk-social-group">
+          <button type="button" class="clerk-social-btn" onclick="simulateClerkSSO('Google')">
+            <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 10px;">
+              <path fill="#ea4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.6 15.01 1 12 1 7.35 1 3.4 3.65 1.5 7.5l3.86 3C6.27 7.7 8.9 5.04 12 5.04z"/>
+              <path fill="#4285f4" d="M23 12.25c0-.82-.07-1.61-.21-2.38H12v4.54h6.16c-.27 1.41-1.07 2.61-2.27 3.4l3.5 2.72c2.05-1.9 3.61-4.7 3.61-8.28z"/>
+              <path fill="#fbbc05" d="M5.36 10.5A6.974 6.974 0 0 1 12 17c1.68 0 3.23-.6 4.45-1.6l-3.5-2.72c-.27.18-.62.28-.95.28-3.1 0-5.73-2.66-6.64-5.46l-3.86 3z"/>
+              <path fill="#34a853" d="M12 23c3.24 0 5.97-1.08 7.96-2.92l-3.5-2.72c-1.13.76-2.58 1.2-4.46 1.2-3.1 0-5.73-2.66-6.64-5.46l-3.86 3C3.4 20.35 7.35 23 12 23z"/>
+            </svg>
+            Continue with Google
+          </button>
+          <button type="button" class="clerk-social-btn" onclick="simulateClerkSSO('GitHub')">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="margin-right: 10px;">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+            </svg>
+            Continue with GitHub
+          </button>
+        </div>
+
+        <div class="clerk-divider">
+          <span>or</span>
+        </div>
+
+        <!-- Standard Login Forms -->
+        <form id="clerk-signin-form">
+          <div class="form-group">
+            <label for="clerk-signin-email">Email address</label>
+            <input type="email" id="clerk-signin-email" class="form-input" required placeholder="you@domain.com">
+          </div>
+          <div class="form-group">
+            <label for="clerk-signin-pass">Password</label>
+            <input type="password" id="clerk-signin-pass" class="form-input" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top: 5px;">Continue</button>
+        </form>
+
+        <p class="clerk-footer-text">
+          No account? <a href="javascript:void(0)" onclick="toggleClerkView('signup')">Sign Up</a>
+        </p>
+      </div>
+
+      <!-- SIGN UP VIEW -->
+      <div id="clerk-signup-view" style="display: none;">
+        <div class="clerk-header">
+          <span class="clerk-logo-dot"></span>
+          <h2>Create your account</h2>
+          <p>Join the GAMIN guild to build strategy squads and track XP.</p>
+        </div>
+
+        <!-- Social Signups -->
+        <div class="clerk-social-group">
+          <button type="button" class="clerk-social-btn" onclick="simulateClerkSSO('Google')">
+            <svg viewBox="0 0 24 24" width="18" height="18" style="margin-right: 10px;">
+              <path fill="#ea4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.67 1.6 15.01 1 12 1 7.35 1 3.4 3.65 1.5 7.5l3.86 3C6.27 7.7 8.9 5.04 12 5.04z"/>
+              <path fill="#4285f4" d="M23 12.25c0-.82-.07-1.61-.21-2.38H12v4.54h6.16c-.27 1.41-1.07 2.61-2.27 3.4l3.5 2.72c2.05-1.9 3.61-4.7 3.61-8.28z"/>
+              <path fill="#fbbc05" d="M5.36 10.5A6.974 6.974 0 0 1 12 17c1.68 0 3.23-.6 4.45-1.6l-3.5-2.72c-.27.18-.62.28-.95.28-3.1 0-5.73-2.66-6.64-5.46l-3.86 3z"/>
+              <path fill="#34a853" d="M12 23c3.24 0 5.97-1.08 7.96-2.92l-3.5-2.72c-1.13.76-2.58 1.2-4.46 1.2-3.1 0-5.73-2.66-6.64-5.46l-3.86 3C3.4 20.35 7.35 23 12 23z"/>
+            </svg>
+            Sign up with Google
+          </button>
+        </div>
+
+        <div class="clerk-divider">
+          <span>or</span>
+        </div>
+
+        <form id="clerk-signup-form">
+          <div class="form-group">
+            <label for="clerk-signup-name">Gamer Tag / Username</label>
+            <input type="text" id="clerk-signup-name" class="form-input" required minlength="3" placeholder="e.g. PixelWarrior">
+          </div>
+          <div class="form-group">
+            <label for="clerk-signup-email">Email address</label>
+            <input type="email" id="clerk-signup-email" class="form-input" required placeholder="you@domain.com">
+          </div>
+          <div class="form-group">
+            <label for="clerk-signup-pass">Password</label>
+            <input type="password" id="clerk-signup-pass" class="form-input" required minlength="6" placeholder="At least 6 characters">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" style="margin-top: 5px;">Continue</button>
+        </form>
+
+        <p class="clerk-footer-text">
+          Have an account? <a href="javascript:void(0)" onclick="toggleClerkView('signin')">Sign In</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. CLERK USER BUTTON FLOATING DROPDOWN MENU -->
+  <div class="clerk-dropdown glass-panel" id="clerk-dropdown">
+    <div class="clerk-dropdown-header">
+      <div class="avatar-xs">
+        <img id="clerk-dropdown-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=GaminGamer" alt="user avatar">
+      </div>
+      <div class="clerk-dropdown-profile">
+        <h4 id="clerk-dropdown-username">Kaelen_Vane</h4>
+        <p id="clerk-dropdown-email">kaelen.vane@clerk.gamin</p>
+      </div>
+    </div>
+    <div class="passport-divider" style="margin: 8px 0;"></div>
+    <ul class="clerk-dropdown-links">
+      <li>
+        <a href="#profile" id="clerk-drop-manage">
+          <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 8px; vertical-align: middle;">
+            <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+          Manage Account
+        </a>
+      </li>
+      <li class="passport-divider" style="margin: 6px 0;"></li>
+      <li>
+        <button id="clerk-signout-btn" class="clerk-signout-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right: 8px; vertical-align: middle;">
+            <path fill="currentColor" d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+          </svg>
+          Sign Out
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 4. TOAST MESSAGES FEEDBACK SYSTEM -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Javascript Modules -->
+  <script src="app.js"></script>
+</body>
+</html>

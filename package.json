@@ -1,0 +1,14 @@
+{
+  "name": "gamin-community-hub",
+  "private": true,
+  "version": "1.0.0",
+  "description": "GAMIN — The Ultimate Gamer Community & Portfolio Hub",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
