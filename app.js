@@ -119,7 +119,8 @@ const DEFAULT_CHALLENGES = [
     difficulty: "Medium",
     xp: 900,
     progress: 0,
-    status: "Available"
+    status: "Available",
+    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=500&auto=format&fit=crop&q=80"
   },
   {
     id: "chal_2",
@@ -128,16 +129,18 @@ const DEFAULT_CHALLENGES = [
     difficulty: "Hard",
     xp: 1200,
     progress: 0,
-    status: "Available"
+    status: "Available",
+    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&auto=format&fit=crop&q=80"
   },
   {
     id: "chal_3",
     title: "Community Design Critic",
-    description: "Submit a feedback application on the Contact tab proposing minimalist UI optimizations for GAMIN network.",
+    description: "Submit a feedback application proposing minimalist UI optimizations for GAMIN network.",
     difficulty: "Easy",
     xp: 300,
     progress: 0,
-    status: "Available"
+    status: "Available",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500&auto=format&fit=crop&q=80"
   }
 ];
 
@@ -1001,40 +1004,48 @@ function renderChallenges() {
   }
 
   container.innerHTML = filteredChallenges.map(chal => {
-    let buttonText = "Accept Quest";
-    let btnClass = "btn-secondary";
+    let buttonText = "Play Now / Accept";
+    let btnClass = "btn-primary";
     
     if (chal.status === "Joined") {
       buttonText = "Submit Proof";
-      btnClass = "btn-primary";
+      btnClass = "btn-warning";
     } else if (chal.status === "Completed") {
       buttonText = "Completed ✓";
       btnClass = "btn-secondary";
     }
 
     let diffColorClass = chal.difficulty.toLowerCase();
+    let bgImage = chal.image || "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&auto=format&fit=crop&q=80";
 
     return `
       <div class="chal-flip-card">
         <div class="chal-flip-inner">
-          <!-- FRONT SIDE (Cyber Access ID Card) -->
-          <div class="chal-flip-front ${diffColorClass}">
+          <!-- FRONT SIDE (Game Cover Image) -->
+          <div class="chal-flip-front ${diffColorClass}" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.85)), url('${bgImage}');">
             <div class="chal-card-top-row">
               <span class="diff-badge ${diffColorClass}">${chal.difficulty}</span>
               <span class="chal-xp-reward">+${chal.xp} XP</span>
             </div>
             
-            <div class="chal-card-middle-row">
-              <div class="chal-card-chip"></div>
-              <div class="chal-card-contactless">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                  <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61l1.42-1.42C5.51 15.11 5 13.62 5 12c0-3.87 3.13-7 7-7s7 3.13 7 7c0 1.62-.51 3.11-1.39 4.19l1.42 1.42C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 4c-2.76 0-5 2.24-5 5 0 1.15.39 2.22 1.03 3.08l1.42-1.42C9.17 13.12 9 12.58 9 12c0-1.66 1.34-3 3-3s3 1.34 3 3c0 .58-.17 1.12-.45 1.66l1.42 1.42C16.61 14.22 17 13.15 17 12c0-2.76-2.24-5-5-5zm0 4c-1.1 0-2 .9-2 2 0 .34.09.66.24.93l1.76-1.76V11z"/>
-                </svg>
-              </div>
+            <div class="chal-front-title-area">
+              <div class="chal-front-title">${chal.title}</div>
+              <span class="chal-hover-hint">Hover to view task &rarr;</span>
+            </div>
+          </div>
+
+          <!-- BACK SIDE (Task Details & Actions) -->
+          <div class="chal-flip-back">
+            <div class="chal-back-header">
+              <h4>${chal.title}</h4>
+              <span class="chal-xp-reward-mini">+${chal.xp} XP</span>
+            </div>
+            
+            <div class="chal-task-block">
+              <span class="chal-task-label">MISSION TASK:</span>
+              <p class="chal-back-desc">${chal.description}</p>
             </div>
 
-            <div class="chal-front-title">${chal.title}</div>
-            
             <div class="chal-progress-area">
               <div class="progress-label-row">
                 <span>Progress</span>
@@ -1044,19 +1055,6 @@ function renderChallenges() {
                 <div class="progress-bar-fill" style="width: ${chal.progress}%;"></div>
               </div>
             </div>
-
-            <div class="chal-card-logo">GAMIN.</div>
-          </div>
-
-          <!-- BACK SIDE (Details & Action) -->
-          <div class="chal-flip-back">
-            <div class="chal-card-strip"></div>
-            <div class="chal-card-sig-row">
-              <div class="chal-card-signature"></div>
-              <span class="chal-card-cvv">SECURE XP</span>
-            </div>
-
-            <p class="chal-back-desc">${chal.description}</p>
 
             <button class="btn ${btnClass} btn-full" onclick="interactChallenge('${chal.id}')" ${chal.status === 'Completed' ? 'disabled' : ''}>
               ${buttonText}
