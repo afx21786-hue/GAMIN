@@ -1668,6 +1668,64 @@ function unlockAchievement(achId) {
 
 // --- 6. OVERLAYS & MODALS CREATION CONTROLLERS ---
 
+// Story Creator Modal Controllers (Auth Gated)
+const storyCreatorModal = document.getElementById("story-creator-modal");
+const closeStoryCreatorBtn = document.getElementById("close-story-creator-btn");
+const createStoryForm = document.getElementById("create-story-form");
+
+window.openStoryCreatorModal = () => {
+  if (clerkAuthenticationGuard("share interactive stories")) {
+    if (storyCreatorModal) storyCreatorModal.classList.add("active");
+  }
+};
+
+const hideStoryCreatorModal = () => {
+  if (storyCreatorModal) storyCreatorModal.classList.remove("active");
+  if (createStoryForm) createStoryForm.reset();
+};
+
+if (closeStoryCreatorBtn) {
+  closeStoryCreatorBtn.addEventListener("click", hideStoryCreatorModal);
+}
+if (storyCreatorModal) {
+  storyCreatorModal.addEventListener("click", (e) => {
+    if (e.target === storyCreatorModal) hideStoryCreatorModal();
+  });
+}
+
+if (createStoryForm) {
+  createStoryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const captionVal = document.getElementById("story-caption").value.trim();
+    const categoryVal = document.getElementById("story-image-category").value;
+
+    if (!captionVal) return;
+
+    // Map selected category to gaming Unsplash URL
+    let imageUrl = "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&auto=format&fit=crop";
+    if (categoryVal === "setup") {
+      imageUrl = "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&auto=format&fit=crop";
+    } else if (categoryVal === "dev") {
+      imageUrl = "https://images.unsplash.com/photo-1586227740562-205a679e55a2?w=800&auto=format&fit=crop";
+    } else if (categoryVal === "hardware") {
+      imageUrl = "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&auto=format&fit=crop";
+    }
+
+    // Update the 'self' story in STORIES_DATA
+    const selfStory = STORIES_DATA.find(s => s.type === "self");
+    if (selfStory) {
+      selfStory.image = imageUrl;
+      selfStory.caption = captionVal;
+      selfStory.unviewed = true; // Make it glow again!
+      selfStory.timestamp = "Just now";
+    }
+
+    renderStoriesBar();
+    hideStoryCreatorModal();
+    showToast("Story updated successfully! 🟢 Share complete.", "success");
+  });
+}
+
 // A. Post Creator Modal (Auth Gated)
 const postCreatorModal = document.getElementById("post-creator-modal");
 const openPostBtn = document.getElementById("open-post-creator-btn");
@@ -2442,6 +2500,7 @@ function renderStoriesBar() {
       <div class="story-circle-item ${unviewedClass} ${st.type}" onclick="launchStoryViewer(${idx})">
         <div class="story-ring-wrapper">
           <img src="${customAvatar}" alt="${customName} Story">
+          ${st.type === "self" ? `<div class="story-plus-badge" onclick="event.stopPropagation(); openStoryCreatorModal();" title="Add Story">+</div>` : ""}
         </div>
         <span class="story-user-tag">${customName}</span>
       </div>

@@ -3283,6 +3283,34 @@ textarea.form-input {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Instagram-style circular plus badge for self story additions */
+.story-plus-badge {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  border: 1.5px solid var(--bg-app);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  transition: all 0.2s var(--transition-elastic);
+  z-index: 5;
+  user-select: none;
+}
+
+.story-plus-badge:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.15);
+}
+
 /* Unviewed story glowing gradient ring */
 .story-circle-item.unviewed .story-ring-wrapper {
   background: linear-gradient(45deg, var(--primary), var(--neon-cyan), var(--neon-purple));
@@ -3787,8 +3815,66 @@ textarea.form-input {
 }
 
 .social-hub-wrapper.collapsed {
-  width: 190px;
-  border-radius: 30px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--primary);
+  box-shadow: 0 0 15px rgba(142, 70, 45, 0.4);
+  overflow: hidden;
+}
+
+.social-hub-wrapper.collapsed .social-hub-header {
+  border-bottom: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 10, 9, 0.95);
+}
+
+.social-hub-wrapper.collapsed .social-hub-title,
+.social-hub-wrapper.collapsed .social-hub-controls {
+  display: none !important;
+}
+
+.social-hub-collapsed-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--primary);
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease;
+}
+
+.social-hub-wrapper.collapsed .social-hub-collapsed-icon {
+  display: flex;
+}
+
+.social-hub-collapsed-icon:hover {
+  color: var(--primary-hover);
+  transform: scale(1.08);
+}
+
+.social-online-badge-dot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--success);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--bg-app);
+  box-shadow: 0 0 4px var(--success);
 }
 
 .social-hub-header {
@@ -3800,10 +3886,6 @@ textarea.form-input {
   align-items: center;
   cursor: pointer;
   user-select: none;
-}
-
-.social-hub-wrapper.collapsed .social-hub-header {
-  border-bottom: none;
 }
 
 .social-hub-title {

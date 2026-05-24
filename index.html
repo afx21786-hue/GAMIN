@@ -1014,6 +1014,14 @@
   <div class="social-hub-wrapper collapsed" id="social-chat-hub">
     <!-- Collapsed Toggle Bar -->
     <div class="social-hub-header" id="social-hub-toggle">
+      <!-- Collapsed Chat Bubble Icon (Sleek Circle) -->
+      <div class="social-hub-collapsed-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22">
+          <path fill="currentColor" d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm0-3h12v2H6V6zm0 6h9v2H6v-2z"/>
+        </svg>
+        <span class="social-online-badge-dot" id="social-collapsed-badge">3</span>
+      </div>
+
       <div class="social-hub-title">
         <span class="social-online-indicator"></span>
         <h4>Social & Chat Hub</h4>
@@ -1103,6 +1111,34 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. STORY CREATOR DIALOG -->
+  <div class="modal-overlay" id="story-creator-modal">
+    <div class="modal-card glass-panel" style="max-width: 450px;">
+      <div class="modal-header">
+        <h3>Create Interactive Story</h3>
+        <button class="close-modal-btn" id="close-story-creator-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="create-story-form">
+          <div class="form-group">
+            <label for="story-caption">Story Caption:</label>
+            <input type="text" id="story-caption" class="form-input" placeholder="e.g. Setting up tactical gameplay profiles! 🎮" required>
+          </div>
+          <div class="form-group">
+            <label for="story-image-category">Select Background Category:</label>
+            <select id="story-image-category" class="form-input">
+              <option value="gaming">👾 High-Tech Cyber Gaming Setup</option>
+              <option value="setup">🖥️ Minimalist Obsidian Desk Setup</option>
+              <option value="dev">⚙️ Cozy Strategy Development</option>
+              <option value="hardware">🔥 Hardware & GPU Rig</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Share to Stories</button>
+        </form>
       </div>
     </div>
   </div>
