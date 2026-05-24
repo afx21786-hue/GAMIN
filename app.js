@@ -337,8 +337,7 @@ const routes = {
   challenges: { viewId: "challenges-view", navId: "nav-challenges", sbId: "sb-link-challenges" },
   ask: { viewId: "ask-view", navId: "nav-ask", sbId: "sb-link-ask" },
   achievements: { viewId: "achievements-view", navId: "nav-achievements", sbId: "sb-link-achievements" },
-  profile: { viewId: "profile-view", navId: "nav-profile", sbId: "sb-link-profile" },
-  contact: { viewId: "contact-view", navId: "nav-contact", sbId: "sb-link-contact" }
+  profile: { viewId: "profile-view", navId: "nav-profile", sbId: "sb-link-profile" }
 };
 
 function router() {
@@ -1885,67 +1884,7 @@ if (createPostForm) {
   });
 }
 
-// B. Feedback Form Validation Loops (Can be submitted anonymously, but rewards authenticated Clerk members!)
-const feedbackForm = document.getElementById("feedback-form");
-if (feedbackForm) {
-  feedbackForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    
-    const nameIn = document.getElementById("contact-name");
-    const emailIn = document.getElementById("contact-email");
-    const msgIn = document.getElementById("contact-message");
-    const termsIn = document.getElementById("contact-terms");
 
-    // Clear previous errors
-    document.querySelectorAll(".error-msg").forEach(el => el.classList.remove("visible"));
-    document.querySelectorAll(".form-input").forEach(el => el.classList.remove("input-error"));
-
-    let isValid = true;
-
-    // Validate Name
-    if (!nameIn.value.trim() || nameIn.value.trim().length < 3) {
-      showInputError("err-contact-name", "contact-name", "Provide at least 3 characters.");
-      isValid = false;
-    }
-
-    // Validate Email
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(emailIn.value.trim())) {
-      showInputError("err-contact-email", "contact-email", "Provide a valid email.");
-      isValid = false;
-    }
-
-    // Validate Message
-    if (!msgIn.value.trim() || msgIn.value.trim().length < 10) {
-      showInputError("err-contact-message", "contact-message", "Details must be at least 10 characters.");
-      isValid = false;
-    }
-
-    // Validate Terms
-    if (!termsIn.checked) {
-      const errBox = document.getElementById("err-contact-terms");
-      if (errBox) {
-        errBox.textContent = "You must agree to Community Guidelines.";
-        errBox.classList.add("visible");
-      }
-      isValid = false;
-    }
-
-    if (isValid) {
-      showToast("Submitting details to GAMIN network...", "info");
-      
-      setTimeout(() => {
-        showToast("Feedback submitted successfully!", "success");
-        feedbackForm.reset();
-        
-        // Rewards logged in Clerk members by unlocking a Supporter Badge!
-        if (appState.clerkUser) {
-          unlockAchievement("ach_3");
-        }
-      }, 1500);
-    }
-  });
-}
 
 function showInputError(errId, inputId, msg) {
   const errText = document.getElementById(errId);
